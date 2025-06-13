@@ -41,7 +41,8 @@ const features = [
 
 <section id="features" class="section bg-gray-50 dark:bg-gray-800/50">
   <div class="container-custom">
-    <div class="text-center max-w-3xl mx-auto mb-16">
+    <div class="grid md:grid-cols-2 gap-8 items-center mb-16">
+      <div class="text-center md:text-left">
       <span class="inline-block px-4 py-1 rounded-full bg-opal-glow dark:bg-opal-glow text-opal-ocean dark:text-opal-ocean font-medium text-sm mb-4">
         What You'll Find Here
       </span>
@@ -49,7 +50,19 @@ const features = [
       <p class="text-gray-600 dark:text-gray-300">
         Just grounded guidance, gentle design, and soulful tools to help you grow into the kind of power that doesn’t shout but resonates.
       </p>
-    </div>
+      </div>
+      <div class="flex justify-center md:justify-end">
+    <lottie-player
+      src="/site.json"
+      background="transparent"
+      speed="1"
+      style="width: 240px; height: 240px;"
+      loop
+      autoplay
+      class="animate-soft-bounce"
+    ></lottie-player>
+  </div>
+  </div>
     
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       {features.map((feature, index) => (
