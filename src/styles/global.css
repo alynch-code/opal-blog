@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Merriweather:wght@300;400&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -9,11 +10,14 @@
   --color-primary-300: #c4b5fd;
   --color-primary-400: #a78bfa;
   --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
+  --color-primary-600: #9263D9;
   --color-primary-700: #6d28d9;
   --color-primary-800: #5b21b6;
   --color-primary-900: #4c1d95;
   --color-primary-950: #2e1065;
+  --color-opal-deep: #1C2E4A;
+  --color-opal-ocean: #007F7C;
+  --color-opal-glow: #B7F9E9;
 
   --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
@@ -31,7 +35,7 @@
   --color-accent-100: #f8fadc;
   --color-accent-200: #f3f7b0;
   --color-accent-300: #eef484;
-  --color-accent-400: #e6ee54;
+  --color-accent-400: #B7F9E9;
   --color-accent-500: #d9e11a;
   --color-accent-600: #bbc40f;
   --color-accent-700: #99a10d;
@@ -53,6 +57,7 @@
 
   --font-sans: Inter, system-ui, sans-serif;
   --font-display: Lexend, system-ui, sans-serif;
+  --font-body: Merriweather, serif;
 
   --animate-fade-in: fadeIn 0.5s ease-in-out;
   --animate-slide-up: slideUp 0.5s ease-in-out;
