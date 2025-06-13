@@ -22,6 +22,7 @@
   --color-opal-pearl: #F5F7FA;
   --color-opal-foam: #3EBFB7;
   --color-opal-blush: #F4EBFD;
+  --color-opal-sky: #D0F4FF;
 
   --color-secondary-50: #f8fafc;
   --color-secondary-100: #f1f5f9;
@@ -120,7 +121,7 @@
 }
 
 @utility btn-primary {
-  @apply btn bg-accent-400 hover:bg-accent-500 text-black shadow-md hover:shadow-lg;
+  @apply btn bg-opal-glow hover:bg-opal-ocean hover:text-opal-glow text-opal-deep shadow-md hover:shadow-lg;
 }
 
 @utility btn-secondary {
@@ -132,7 +133,7 @@
 }
 
 @utility btn-outline {
-  @apply btn border-2 border-secondary-300 dark:border-secondary-700 hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-900 dark:text-secondary-100;
+  @apply btn border-2 border-opal-glow dark:border-secondary-700 hover:bg-opal-ocean dark:hover:bg-secondary-800 text-opal-glow dark:text-secondary-100;
 }
 
 @utility container-custom {
