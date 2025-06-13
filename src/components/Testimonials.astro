@@ -1,25 +1,16 @@
 ---
 const testimonials = [
   {
-    content: "This platform has completely transformed how we manage our projects. The intuitive interface and powerful features have increased our team's productivity by over 40%.",
-    author: "Sarah Johnson",
-    position: "Product Manager",
-    company: "TechCorp",
-    avatar: "https://randomuser.me/api/portraits/women/32.jpg"
+    content: "If I never hustle again, I am still worthy of everything good.",
+    avatar: "https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_1280.jpg"
   },
   {
-    content: "I've tried many SaaS solutions, but this one stands out for its ease of use and comprehensive feature set. The customer support is also exceptional.",
-    author: "Michael Chen",
-    position: "CTO",
-    company: "Innovate Inc.",
-    avatar: "https://randomuser.me/api/portraits/men/46.jpg"
+    content: "I can build a soft life at my own pace. There's no deadline on healing or becoming.",
+    avatar: "https://cdn.pixabay.com/photo/2017/08/02/21/15/rain-2573488_1280.jpg"
   },
   {
-    content: "The analytics capabilities alone are worth the investment. We've gained valuable insights that have helped us optimize our operations and reduce costs.",
-    author: "Emily Rodriguez",
-    position: "Operations Director",
-    company: "Global Solutions",
-    avatar: "https://randomuser.me/api/portraits/women/65.jpg"
+    content: "I don't need to make it loud to make it matter.",
+    avatar: "https://cdn.pixabay.com/photo/2025/05/13/12/40/sailboat-9597523_1280.jpg"
   }
 ];
 ---
@@ -27,12 +18,12 @@ const testimonials = [
 <section id="testimonials" class="section">
   <div class="container-custom">
     <div class="text-center max-w-3xl mx-auto mb-16">
-      <span class="inline-block px-4 py-1 rounded-full bg-secondary-100 dark:bg-secondary-900 text-secondary-600 dark:text-secondary-300 font-medium text-sm mb-4">
-        Customer Stories
+      <span class="inline-block px-4 py-1 rounded-full bg-opal-glow dark:opal-glow text-opal-ocean dark:text-opal-ocean font-medium text-sm mb-4">
+        Cozy Corner
       </span>
-      <h2 class="mb-6 text-gray-900 dark:text-white">What Our Clients Say</h2>
+      <h2 class="mb-6 text-gray-900 dark:text-white">What You Might Need to Hear</h2>
       <p class="text-gray-600 dark:text-gray-300">
-        Don't just take our word for it. Here's what our customers have to say about their experience with our platform.
+        You don't need to do more to deserve rest. You don't need to fix everything at once to start again.
       </p>
     </div>
     
@@ -42,33 +33,22 @@ const testimonials = [
           class="card p-6 border border-gray-200 dark:border-gray-700 slide-up" 
           style={`animation-delay: ${index * 150}ms`}
         >
-          <div class="mb-6">
-            {[...Array(5)].map(() => (
-              <svg class="w-5 h-5 inline-block text-warning-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-              </svg>
-            ))}
-          </div>
           
-          <blockquote class="mb-6 text-gray-700 dark:text-gray-300 italic">"{testimonial.content}"</blockquote>
-          
-          <div class="flex items-center">
-            <img 
-              src={testimonial.avatar} 
-              alt={testimonial.author} 
-              class="w-12 h-12 rounded-full mr-4 object-cover"
-              loading="lazy"
-            />
-            <div>
-              <p class="font-semibold text-gray-900 dark:text-white">{testimonial.author}</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{testimonial.position}, {testimonial.company}</p>
-            </div>
-          </div>
+<div 
+  class="h-48 bg-cover bg-center rounded-xl flex items-center justify-center text-center px-4 py-6 relative overflow-hidden shadow-md"
+  style={`background-image: url('${testimonial.avatar}')`}
+>
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm rounded-xl"></div>
+  <blockquote class="relative z-10 text-white italic text-sm md:text-base max-w-xs mx-auto">
+    “{testimonial.content}”
+  </blockquote>
+</div>
+
         </div>
       ))}
     </div>
     
-    <div class="mt-16 bg-linear-to-r from-primary-500 to-secondary-500 rounded-2xl p-8 md:p-12 relative overflow-hidden">
+    <div class="mt-16 bg-linear-to-r from-opal-ocean to-opal-glow rounded-2xl p-8 md:p-12 relative overflow-hidden">
       <div class="absolute inset-0 bg-linear-to-r from-primary-600/30 to-secondary-600/30 backdrop-blur-xs"></div>
       <div class="relative z-10 text-center md:text-left md:flex items-center justify-between">
         <div class="mb-6 md:mb-0 md:mr-8">
