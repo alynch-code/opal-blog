@@ -5,72 +5,87 @@ function getTimeGreeting() {
   return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
 }
 
-function scrollToBottom() {
-  const chatPanel = document.getElementById('chat-panel');
-  if (chatPanel) {
-    chatPanel.scrollTop = chatPanel.scrollHeight;
-  }
-}
-
-
-const initialGreeting = getTimeGreeting();
-
 document.addEventListener('DOMContentLoaded', () => {
-  const chatPanel = document.getElementById('chat-panel');
   const chatForm = document.getElementById('chat-form');
   const userInput = document.getElementById('user-input');
+  const chatPanel = document.getElementById('chat-panel');
 
-  if (!chatPanel || !chatForm || !userInput) {
-    console.warn('Chat elements not found on page.');
-    return;
+  // ✅ Hide scrollbars visually while keeping scroll functionality
+  if (chatPanel) {
+    chatPanel.style.overflowY = 'scroll';
+    chatPanel.style.scrollbarWidth = 'none'; // Firefox
+    chatPanel.style.msOverflowStyle = 'none'; // IE
+    chatPanel.style.webkitOverflowScrolling = 'touch'; // iOS smooth scroll
+    chatPanel.style.maxHeight = '400px';
+    chatPanel.style.paddingRight = '8px'; // buffer for hidden scrollbar
+
+    // Chrome, Safari, Opera (via CSS injection)
+    const style = document.createElement('style');
+    style.innerHTML = `
+      #chat-panel::-webkit-scrollbar {
+        display: none;
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  // Utility: Scroll to bottom
   const scrollToBottom = () => {
     chatPanel.scrollTop = chatPanel.scrollHeight;
   };
 
-  // Utility: Add message to panel
-  const addMessage = (sender, text, mood = '') => {
-    const msg = document.createElement('div');
-    msg.className = `p-2 rounded-md ${sender === 'Opal' ? 'bg-opal-blush self-start' : 'bg-opal-sky self-end'} max-w-[75%]`;
-    msg.innerHTML = `<strong>${sender}${mood ? ` ${mood}` : ''}:</strong> ${text}`;
-    chatPanel.appendChild(msg);
+  const createMessage = (sender, text) => {
+    const message = document.createElement('div');
+    message.className = `p-3 rounded-md text-sm max-w-[80%] ${
+      sender === 'user'
+        ? 'self-end bg-primary-100 text-primary-900'
+        : 'self-start bg-opal-blush text-opal-deep'
+    }`;
+
+    const emojiReplacements = {
+      '*yawn*': '😪',
+      '*purr*': '😸',
+      '*stretch*': '🐾',
+      '*sleep*': '💤',
+      '*hiss*': '😾',
+      '*meow*': '🐱',
+    };
+
+    let parsedText = text;
+    Object.entries(emojiReplacements).forEach(([txt, emoji]) => {
+      parsedText = parsedText.replaceAll(txt, emoji);
+    });
+
+    message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsedText}`;
+    chatPanel.appendChild(message);
     scrollToBottom();
   };
 
-  // Mood-based emoji (simplified)
-  const getMoodEmoji = (text) => {
-    const lower = text.toLowerCase();
-    if (lower.includes('sleep') || lower.includes('bored')) return '😴';
-    if (lower.includes('happy') || lower.includes('yay')) return '😺';
-    if (lower.includes('sad') || lower.includes('help')) return '😿';
-    if (lower.includes('cozy') || lower.includes('purr')) return '🐾';
-    return '';
-  };
-
-  // Handle form submission
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = userInput.value.trim();
     if (!input) return;
 
-    addMessage('You', input);
+    createMessage('user', input);
     userInput.value = '';
+
+    createMessage('opal', '...'); // typing placeholder
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input })
+        body: JSON.stringify({ message: input }),
       });
 
       const data = await res.json();
-      const mood = getMoodEmoji(data.reply);
-      addMessage('Opal', data.reply, mood);
+      chatPanel.lastChild.remove(); // remove "..." placeholder
+      createMessage('opal', data.reply || 'Hmm... nothing to say 😽');
     } catch (err) {
-      addMessage('Opal', 'Oops! I got my paws tangled in the internet 😿');
-      console.error('Chat error:', err);
+      chatPanel.lastChild.remove();
+      createMessage('opal', 'Oops! I got tangled in yarn 🧶');
     }
   });
+
+  // Optional: greet the user with a cozy time-based message
+  createMessage('opal', getTimeGreeting());
 });
