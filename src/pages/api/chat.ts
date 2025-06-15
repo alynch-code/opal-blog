@@ -1,51 +1,42 @@
-import { OpenAI } from 'openai';
+// src/pages/api/chat.ts
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request }) => {
-  // TEMP DEBUG: Check if the API key is available
-  console.log("🔑 OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
-
-  const body = await request.json();
-  const userMessage = body.message;
-
-  if (!process.env.OPENAI_API_KEY) {
-    return new Response(JSON.stringify({ error: 'Missing OpenAI API key' }), {
-      status: 500,
-    });
-  }
-
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
   try {
-    const chatResponse = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: `You are Opal the Cat — a playful, magical cat who helps users relax and feel cozy. Speak in cat-like tones, suggest crystals, or gently decline boring requests with purrs or sass.`, 
-        },
-        {
-          role: 'user',
-          content: userMessage,
-        },
-      ],
-      temperature: 0.8,
+    const { message } = await request.json();
+
+    const response = await fetch("https://api.together.xyz/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.TOGETHER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "mistralai/Mistral-7B-Instruct-v0.2",
+        messages: [
+          {
+            role: "system",
+            content: `You are Opal the Cat 🐾 — a cozy, magical feline who gives gentle, quirky answers. You love naps, crystals, and warm sunbeams. If a question is boring or harsh, you refuse to answer with sass and charm. You might yawn mid-response or give a paw-of-approval. Never break character.`
+          },
+          {
+            role: "user",
+            content: message
+          }
+        ],
+        temperature: 0.8,
+        top_p: 0.95,
+        max_tokens: 256
+      })
     });
 
-    const reply = chatResponse.choices[0].message.content;
+    if (!response.ok) {
+      const err = await response.text();
+      return new Response(JSON.stringify({ error: `Together API Error: ${err}` }), { status: 500 });
+    }
 
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const { choices } = await response.json();
+    return new Response(JSON.stringify({ reply: choices[0].message.content }));
   } catch (err) {
-    console.error("❌ Error in OpenAI request:", err);
-
-    return new Response(
-      JSON.stringify({ error: 'Failed to generate chat response' }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: `Server Error: ${err}` }), { status: 500 });
   }
 };
