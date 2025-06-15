@@ -1,46 +1,42 @@
 // src/pages/api/chat.ts
 import type { APIRoute } from 'astro';
+import { OpenAI } from 'openai';
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.OPENAI_API_KEY
+});
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const { message } = await request.json();
 
-    // --- Simulated chatbot response ---
-    const reply = getCatResponse(message);
+    if (!message || message.trim() === "") {
+      return new Response(
+        JSON.stringify({ reply: "That sounds boring. Ask me something cozier 😽" }),
+        { status: 200 }
+      );
+    }
 
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `You're Opal the Cat 😺 — a cozy, quirky cat with a love for crystals, naps, and playful wisdom. Stay in character, be a little snarky but comforting.`
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      temperature: 0.8
     });
-  } catch (error) {
-    console.error('Error in /api/chat:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+
+    const reply = completion.choices[0]?.message?.content || "Meow? Something went fuzzy.";
+
+    return new Response(JSON.stringify({ reply }), { status: 200 });
+  } catch (err: any) {
+    console.error(err);
+    return new Response(JSON.stringify({ reply: "Oops! I knocked something off the table. Try again later 🐾" }), { status: 500 });
   }
 };
-
-// 🐾 Simple cat-like response logic
-function getCatResponse(message: string): string {
-  const trimmed = message.toLowerCase().trim();
-  if (!trimmed) return "Meow? Say something, hooman 🐱";
-  if (trimmed.includes("crystal")) return "Try amethyst for calm or citrine for good vibes 💎";
-  if (trimmed.includes("sleep")) return "Curl into a warm blanket. Cats know best 😴";
-  if (trimmed.includes("love")) return "Purrhaps you need some self-love first 💖";
-  if (trimmed.includes("food")) return "Tuna? Chicken? Just no cucumbers, please 🐟🍗";
-
-  const quirkyResponses = [
-    "I knocked your questions off the shelf. Sorry not sorry 😼",
-    "That sounds boring. Ask me something cozier 😽",
-    "Pawse and reflect. What do *you* think?",
-    "Mmm... I’ll get back to you after a nap 😴",
-    "I'll allow that question. Proceed 🐾"
-  ];
-
-  return quirkyResponses[Math.floor(Math.random() * quirkyResponses.length)];
-}
