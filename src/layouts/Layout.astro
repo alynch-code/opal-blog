@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/transitions.css';
 import { ViewTransitions } from 'astro:transitions';
+import OpalChat from '../components/OpalChat.astro';
 
 export interface Props {
   title: string;
@@ -19,7 +20,7 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
@@ -72,5 +73,7 @@ const {
       var _ctct_m = "77775fbce43e6084a770a4e6549d14d9";
     </script>
     <script id="signupScript" src="https://static.ctctcdn.com/js/signup-form-widget/current/signup-form-widget.min.js" async defer></script>
+      <!-- 🐱 Opal the Cat Chatbot -->
+    <OpalChat />
   </body>
 </html>

@@ -1,0 +1,59 @@
+---
+---
+
+// No frontmatter needed
+<div 
+  x-data="{ open: false }" 
+  class="fixed bottom-6 right-6 z-50"
+>
+  <!-- Floating Chat Button -->
+  <button 
+    @click="open = !open" 
+    class="w-16 h-16 rounded-full shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700 hover:scale-105 transition-all"
+    aria-label="Chat with Opal the Cat"
+  >
+    <img 
+      src="/opal-avatar.jpg" 
+      alt="Opal the Cat Avatar" 
+      class="w-10 h-10 rounded-full object-cover"
+    />
+  </button>
+
+  <!-- Chat Box -->
+  <div 
+    x-show="open" 
+    x-transition 
+    class="mt-4 w-[320px] bg-white dark:bg-gray-900 shadow-2xl rounded-xl p-4 text-sm text-gray-800 dark:text-gray-100"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <img src="/opal-avatar.jpg" alt="Opal Avatar" class="w-6 h-6 rounded-full" />
+        <span class="font-semibold">Opal the Cat</span>
+      </div>
+      <button @click="open = false" class="text-gray-400 hover:text-gray-700 dark:hover:text-white">&times;</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="opal-messages" class="space-y-2 mb-4 max-h-48 overflow-y-auto text-sm">
+      <!-- Messages -->
+      <div id="opal-messages" class="space-y-2 mb-4 max-h-48 overflow-y-auto text-sm">
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="opal-form" class="flex items-center gap-2">
+      <input 
+        id="opal-input"
+        type="text" 
+        placeholder="Ask something cozy..." 
+        class="flex-grow px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-opal-ocean"
+        required
+      />
+      <button type="submit" class="px-3 py-2 bg-opal-ocean text-white rounded-lg">Send</button>
+    </form>
+  </div>
+</div>
+
+<!-- External JS Logic -->
+<script src="/src/scripts/opal-chat.js" is:inline></script>
