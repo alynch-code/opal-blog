@@ -1,50 +1,51 @@
-// src/pages/api/chat.ts
-
+import { OpenAI } from 'openai';
 import type { APIRoute } from 'astro';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: import.meta.env.OPENAI_API_KEY
-});
 
 export const POST: APIRoute = async ({ request }) => {
+  // TEMP DEBUG: Check if the API key is available
+  console.log("🔑 OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
+
+  const body = await request.json();
+  const userMessage = body.message;
+
+  if (!process.env.OPENAI_API_KEY) {
+    return new Response(JSON.stringify({ error: 'Missing OpenAI API key' }), {
+      status: 500,
+    });
+  }
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
   try {
-    const { message } = await request.json();
-
-    if (!message || message.trim() === '') {
-      return new Response(
-        JSON.stringify({ reply: "That sounds boring. Ask me something cozier 😽" }),
-        { status: 200 }
-      );
-    }
-
     const chatResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content:
-            "You are Opal, a cozy, magical cat who gives comforting, quirky advice. You sometimes suggest crystals or self-care rituals. You love naps, soft things, and ignoring boring questions. Keep it playful but supportive."
+          content: `You are Opal the Cat — a playful, magical cat who helps users relax and feel cozy. Speak in cat-like tones, suggest crystals, or gently decline boring requests with purrs or sass.`, 
         },
-        { role: 'user', content: message }
+        {
+          role: 'user',
+          content: userMessage,
+        },
       ],
-      temperature: 0.8
+      temperature: 0.8,
     });
 
-    const reply = chatResponse.choices[0]?.message?.content ?? "Opal fell asleep mid-thought 😴";
+    const reply = chatResponse.choices[0].message.content;
 
     return new Response(JSON.stringify({ reply }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error: any) {
-    console.error('Opal Chat Error:', error);
+  } catch (err) {
+    console.error("❌ Error in OpenAI request:", err);
 
-    return new Response(JSON.stringify({
-      error: 'Something went wrong. Maybe Opal knocked over the server 😿'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ error: 'Failed to generate chat response' }),
+      { status: 500 }
+    );
   }
 };
