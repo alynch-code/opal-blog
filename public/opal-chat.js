@@ -5,60 +5,73 @@ function getTimeGreeting() {
   return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
 }
 
+function scrollToBottom() {
+  const chatPanel = document.getElementById('chat-panel');
+  if (chatPanel) {
+    chatPanel.scrollTop = chatPanel.scrollHeight;
+  }
+}
+
+const emojiReplacements = {
+  '*yawn*': '😪',
+  '*purr*': '😸',
+  '*stretch*': '🐾',
+  '*sleep*': '💤',
+  '*hiss*': '😾',
+  '*meow*': '🐱',
+};
+
+function parseWithEmojis(text) {
+  let result = text;
+  for (const [txt, emoji] of Object.entries(emojiReplacements)) {
+    result = result.replaceAll(txt, emoji);
+  }
+  return result;
+}
+
+function createMessage(sender, text) {
+  const chatPanel = document.getElementById('chat-panel');
+  const message = document.createElement('div');
+  message.className = `p-3 rounded-md text-sm max-w-[80%] ${
+    sender === 'user'
+      ? 'self-end bg-primary-100 text-primary-900'
+      : 'self-start bg-opal-blush text-opal-deep'
+  }`;
+
+  const parsed = parseWithEmojis(text);
+  message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsed}`;
+  chatPanel.appendChild(message);
+  scrollToBottom();
+}
+
+function loadChatMemory() {
+  const saved = sessionStorage.getItem('opal-chat');
+  if (saved) {
+    const messages = JSON.parse(saved);
+    messages.forEach(({ sender, text }) => createMessage(sender, text));
+  } else {
+    createMessage('opal', getTimeGreeting());
+  }
+}
+
+function saveChatMessage(sender, text) {
+  const saved = sessionStorage.getItem('opal-chat');
+  const messages = saved ? JSON.parse(saved) : [];
+  messages.push({ sender, text });
+  sessionStorage.setItem('opal-chat', JSON.stringify(messages));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const chatForm = document.getElementById('chat-form');
-  const userInput = document.getElementById('user-input');
+  const chatForm = document.getElementById('opal-form');
+  const userInput = document.getElementById('opal-input');
   const chatPanel = document.getElementById('chat-panel');
 
-  // ✅ Hide scrollbars visually while keeping scroll functionality
-  if (chatPanel) {
-    chatPanel.style.overflowY = 'scroll';
-    chatPanel.style.scrollbarWidth = 'none'; // Firefox
-    chatPanel.style.msOverflowStyle = 'none'; // IE
-    chatPanel.style.webkitOverflowScrolling = 'touch'; // iOS smooth scroll
-    chatPanel.style.maxHeight = '400px';
-    chatPanel.style.paddingRight = '8px'; // buffer for hidden scrollbar
-
-    // Chrome, Safari, Opera (via CSS injection)
-    const style = document.createElement('style');
-    style.innerHTML = `
-      #chat-panel::-webkit-scrollbar {
-        display: none;
-      }
-    `;
-    document.head.appendChild(style);
+  if (!chatForm || !userInput || !chatPanel) {
+    console.warn("Chat elements not found on page.");
+    return;
   }
 
-  const scrollToBottom = () => {
-    chatPanel.scrollTop = chatPanel.scrollHeight;
-  };
-
-  const createMessage = (sender, text) => {
-    const message = document.createElement('div');
-    message.className = `p-3 rounded-md text-sm max-w-[80%] ${
-      sender === 'user'
-        ? 'self-end bg-primary-100 text-primary-900'
-        : 'self-start bg-opal-blush text-opal-deep'
-    }`;
-
-    const emojiReplacements = {
-      '*yawn*': '😪',
-      '*purr*': '😸',
-      '*stretch*': '🐾',
-      '*sleep*': '💤',
-      '*hiss*': '😾',
-      '*meow*': '🐱',
-    };
-
-    let parsedText = text;
-    Object.entries(emojiReplacements).forEach(([txt, emoji]) => {
-      parsedText = parsedText.replaceAll(txt, emoji);
-    });
-
-    message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsedText}`;
-    chatPanel.appendChild(message);
-    scrollToBottom();
-  };
+  loadChatMemory();
 
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -66,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!input) return;
 
     createMessage('user', input);
+    saveChatMessage('user', input);
     userInput.value = '';
 
     createMessage('opal', '...'); // typing placeholder
@@ -79,13 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
       chatPanel.lastChild.remove(); // remove "..." placeholder
-      createMessage('opal', data.reply || 'Hmm... nothing to say 😽');
+      const reply = data.reply || 'Hmm... nothing to say 😽';
+      createMessage('opal', reply);
+      saveChatMessage('opal', reply);
     } catch (err) {
       chatPanel.lastChild.remove();
-      createMessage('opal', 'Oops! I got tangled in yarn 🧶');
+      const fallback = 'Oops! I got tangled in yarn 🧶';
+      createMessage('opal', fallback);
+      saveChatMessage('opal', fallback);
     }
   });
-
-  // Optional: greet the user with a cozy time-based message
-  createMessage('opal', getTimeGreeting());
 });
