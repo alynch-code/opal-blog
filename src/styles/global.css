@@ -196,3 +196,18 @@
 :focus-visible {
   @apply outline-hidden ring-2 ring-primary-500 dark:ring-primary-400;
 }
+
+.chat-panel {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.chat-panel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.chat-panel {
+  max-height: 100%;
+}
+
