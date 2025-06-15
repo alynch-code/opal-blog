@@ -198,16 +198,14 @@
 }
 
 .chat-panel {
+  max-height: 100%;
   overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .chat-panel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none; /* Chrome, Safari */
 }
 
-.chat-panel {
-  max-height: 100%;
-}
 
