@@ -41,21 +41,20 @@
       ></div>
 
       <!-- Chat Form -->
-      <form id="chat-form" class="flex gap-2">
-        <input 
-          id="user-input"
-          type="text" 
-          placeholder="Ask something cozy..." 
-          class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-opal-ocean"
-          required
-        />
-        <button 
-          type="submit" 
-          class="px-3 py-2 bg-opal-ocean text-white rounded-lg"
-        >
-          Send
-        </button>
-      </form>
+<form id="opal-form" class="flex items-center gap-2">
+  <input 
+    id="opal-input"
+    type="text" 
+    placeholder="Ask something cozy..." 
+    class="flex-grow px-3 py-2 rounded-lg border bg-white"
+    required
+  />
+  <button type="submit" class="px-3 py-2 bg-opal-ocean text-white rounded-lg">Send</button>
+</form>
+      <div
+  id="chat-panel"
+  class="chat-panel overflow-y-auto max-h-[400px] grow flex flex-col space-y-2 px-4 py-2 border rounded-md mb-4 h-[300px]">
+</div>
     </div>
   </div>
 
