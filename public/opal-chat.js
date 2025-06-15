@@ -5,13 +5,6 @@ function getTimeGreeting() {
   return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
 }
 
-function scrollToBottom() {
-  const chatPanel = document.getElementById('chat-panel');
-  if (chatPanel) {
-    chatPanel.scrollTop = chatPanel.scrollHeight;
-  }
-}
-
 const emojiReplacements = {
   '*yawn*': '😪',
   '*purr*': '😸',
@@ -29,8 +22,17 @@ function parseWithEmojis(text) {
   return result;
 }
 
+function scrollToBottom() {
+  const chatPanel = document.getElementById('chat-panel');
+  if (chatPanel) {
+    chatPanel.scrollTop = chatPanel.scrollHeight;
+  }
+}
+
 function createMessage(sender, text) {
   const chatPanel = document.getElementById('chat-panel');
+  if (!chatPanel) return;
+
   const message = document.createElement('div');
   message.className = `p-3 rounded-md text-sm max-w-[80%] ${
     sender === 'user'
@@ -38,8 +40,7 @@ function createMessage(sender, text) {
       : 'self-start bg-opal-blush text-opal-deep'
   }`;
 
-  const parsed = parseWithEmojis(text);
-  message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsed}`;
+  message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parseWithEmojis(text)}`;
   chatPanel.appendChild(message);
   scrollToBottom();
 }
@@ -61,46 +62,49 @@ function saveChatMessage(sender, text) {
   sessionStorage.setItem('opal-chat', JSON.stringify(messages));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const chatForm = document.getElementById('opal-form');
-  const userInput = document.getElementById('opal-input');
-  const chatPanel = document.getElementById('chat-panel');
+// Delay until DOM is fully loaded AND elements are mounted
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const chatForm = document.getElementById('opal-form');
+    const userInput = document.getElementById('opal-input');
+    const chatPanel = document.getElementById('chat-panel');
 
-  if (!chatForm || !userInput || !chatPanel) {
-    console.warn("Chat elements not found on page.");
-    return;
-  }
-
-  loadChatMemory();
-
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = userInput.value.trim();
-    if (!input) return;
-
-    createMessage('user', input);
-    saveChatMessage('user', input);
-    userInput.value = '';
-
-    createMessage('opal', '...'); // typing placeholder
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
-      });
-
-      const data = await res.json();
-      chatPanel.lastChild.remove(); // remove "..." placeholder
-      const reply = data.reply || 'Hmm... nothing to say 😽';
-      createMessage('opal', reply);
-      saveChatMessage('opal', reply);
-    } catch (err) {
-      chatPanel.lastChild.remove();
-      const fallback = 'Oops! I got tangled in yarn 🧶';
-      createMessage('opal', fallback);
-      saveChatMessage('opal', fallback);
+    if (!chatForm || !userInput || !chatPanel) {
+      console.warn("Chat elements not found on page.");
+      return;
     }
-  });
+
+    loadChatMemory();
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = userInput.value.trim();
+      if (!input) return;
+
+      createMessage('user', input);
+      saveChatMessage('user', input);
+      userInput.value = '';
+
+      createMessage('opal', '...');
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: input }),
+        });
+
+        const data = await res.json();
+        chatPanel.lastChild.remove();
+        const reply = data.reply || 'Hmm... nothing to say 😽';
+        createMessage('opal', reply);
+        saveChatMessage('opal', reply);
+      } catch (err) {
+        chatPanel.lastChild.remove();
+        const fallback = 'Oops! I got tangled in yarn 🧶';
+        createMessage('opal', fallback);
+        saveChatMessage('opal', fallback);
+      }
+    });
+  }, 100); // slight delay ensures AlpineJS or Astro rendering is done
 });
