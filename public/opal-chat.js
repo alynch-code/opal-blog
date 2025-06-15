@@ -5,68 +5,78 @@ function getTimeGreeting() {
   return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
 }
 
+function scrollToBottom() {
+  const chatPanel = document.getElementById('chat-panel');
+  if (chatPanel) {
+    chatPanel.scrollTop = chatPanel.scrollHeight;
+  }
+}
+
+
 const initialGreeting = getTimeGreeting();
 
+// opal-chat.js
+
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('opal-form');
-  const input = document.getElementById('opal-input');
-  const messages = document.getElementById('opal-messages');
+  const chatForm = document.getElementById('chat-form');
+  const userInput = document.getElementById('user-input');
+  const chatPanel = document.getElementById('chat-panel');
 
-  if (!form || !input || !messages) {
-    console.error("🐾 Opal Chat: Missing required elements.");
-    return;
-  }
+  const scrollToBottom = () => {
+    chatPanel.scrollTop = chatPanel.scrollHeight;
+  };
 
-  function showTypingIndicator() {
-    const typing = document.createElement('div');
-    typing.className = 'text-xs italic text-gray-400';
-    typing.textContent = 'Opal is typing...';
-    messages.appendChild(typing);
-    messages.scrollTop = messages.scrollHeight;
-    return typing;
-  }
-
-  function addMessage(text, from = 'opal') {
+  const createMessage = (sender, text) => {
     const message = document.createElement('div');
-    message.className = `opal-message ${from} p-2 rounded-md mt-1 ${
-      from === 'user'
-        ? 'bg-gray-200 dark:bg-gray-700 text-right'
-        : 'bg-opal-blush/30 dark:bg-opal-ocean/30'
+    message.className = `p-3 rounded-md text-sm max-w-[80%] ${
+      sender === 'user'
+        ? 'self-end bg-primary-100 text-primary-900'
+        : 'self-start bg-opal-blush text-opal-deep'
     }`;
-    message.textContent = text;
-    messages.appendChild(message);
-    messages.scrollTop = messages.scrollHeight;
-  }
 
-  // Inject time-based greeting with a cozy delay
-  setTimeout(() => {
-    addMessage(initialGreeting, 'opal');
-  }, 800);
+    // Emoji swap
+    const emojiReplacements = {
+      '*yawn*': '😪',
+      '*purr*': '😸',
+      '*stretch*': '🐾',
+      '*sleep*': '💤',
+      '*hiss*': '😾',
+      '*meow*': '🐱',
+    };
 
-  form.addEventListener('submit', async (e) => {
+    let parsedText = text;
+    Object.entries(emojiReplacements).forEach(([txt, emoji]) => {
+      parsedText = parsedText.replaceAll(txt, emoji);
+    });
+
+    message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsedText}`;
+    chatPanel.appendChild(message);
+    scrollToBottom();
+  };
+
+  chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const userInput = input.value.trim();
-    if (!userInput) return;
+    const input = userInput.value.trim();
+    if (!input) return;
 
-    addMessage(userInput, 'user');
-    input.value = '';
+    createMessage('user', input);
+    userInput.value = '';
 
-    const typing = showTypingIndicator();
+    createMessage('opal', '...'); // typing placeholder
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput })
+        body: JSON.stringify({ message: input }),
       });
 
       const data = await res.json();
-      typing.remove();
-      addMessage(data.reply || "🐱 Opal got distracted... try again?", 'opal');
+      chatPanel.lastChild.remove(); // remove "..." placeholder
+      createMessage('opal', data.reply || 'Hmm... nothing to say 😽');
     } catch (err) {
-      typing.remove();
-      addMessage("⚠️ Opal tripped on a bug in the code. Try again later.", 'opal');
-      console.error(err);
+      chatPanel.lastChild.remove();
+      createMessage('opal', 'Oops! I got tangled in yarn 🧶');
     }
   });
 });
