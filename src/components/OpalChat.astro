@@ -1,6 +1,7 @@
 ---
 ---
 
+// UI component: chat button, panel, form
 <div 
   x-data="{ open: false }" 
   class="fixed bottom-6 right-6 z-50"
@@ -24,6 +25,7 @@
     x-transition 
     @click.stop
     class="mt-4 w-[320px] bg-white dark:bg-gray-900 shadow-2xl rounded-xl p-4 text-sm text-gray-800 dark:text-gray-100"
+    style="display: none;"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
@@ -46,23 +48,23 @@
         id="opal-input"
         type="text" 
         placeholder="Ask something cozy..." 
-        class="flex-grow px-3 py-2 rounded-lg border bg-white"
+        class="flex-grow px-3 py-2 rounded-lg border bg-white text-black"
         required
       />
-      <button type="submit" class="px-3 py-2 bg-opal-ocean text-white rounded-lg">Send</button>
+      <button type="submit" class="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Send</button>
     </form>
   </div>
 </div>
 
-<!-- External JS -->
+<!-- Chat Logic -->
 <script src="/opal-chat.js" is:inline></script>
 
 <style>
   .chat-panel {
-    scrollbar-width: none;         /* Firefox */
-    -ms-overflow-style: none;     /* IE 10+ */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
   .chat-panel::-webkit-scrollbar {
-    display: none;                /* Chrome, Safari */
+    display: none;
   }
 </style>
