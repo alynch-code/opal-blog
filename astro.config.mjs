@@ -7,6 +7,7 @@ import alpinejs from '@astrojs/alpinejs';
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    envPrefix: 'CC_' // allows Astro to load any env variable starting with CC_
   },
   integrations: [
     alpinejs()
