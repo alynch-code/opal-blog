@@ -15,68 +15,62 @@ function scrollToBottom() {
 
 const initialGreeting = getTimeGreeting();
 
-// opal-chat.js
-
 document.addEventListener('DOMContentLoaded', () => {
+  const chatPanel = document.getElementById('chat-panel');
   const chatForm = document.getElementById('chat-form');
   const userInput = document.getElementById('user-input');
-  const chatPanel = document.getElementById('chat-panel');
 
+  if (!chatPanel || !chatForm || !userInput) {
+    console.warn('Chat elements not found on page.');
+    return;
+  }
+
+  // Utility: Scroll to bottom
   const scrollToBottom = () => {
     chatPanel.scrollTop = chatPanel.scrollHeight;
   };
 
-  const createMessage = (sender, text) => {
-    const message = document.createElement('div');
-    message.className = `p-3 rounded-md text-sm max-w-[80%] ${
-      sender === 'user'
-        ? 'self-end bg-primary-100 text-primary-900'
-        : 'self-start bg-opal-blush text-opal-deep'
-    }`;
-
-    // Emoji swap
-    const emojiReplacements = {
-      '*yawn*': '😪',
-      '*purr*': '😸',
-      '*stretch*': '🐾',
-      '*sleep*': '💤',
-      '*hiss*': '😾',
-      '*meow*': '🐱',
-    };
-
-    let parsedText = text;
-    Object.entries(emojiReplacements).forEach(([txt, emoji]) => {
-      parsedText = parsedText.replaceAll(txt, emoji);
-    });
-
-    message.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parsedText}`;
-    chatPanel.appendChild(message);
+  // Utility: Add message to panel
+  const addMessage = (sender, text, mood = '') => {
+    const msg = document.createElement('div');
+    msg.className = `p-2 rounded-md ${sender === 'Opal' ? 'bg-opal-blush self-start' : 'bg-opal-sky self-end'} max-w-[75%]`;
+    msg.innerHTML = `<strong>${sender}${mood ? ` ${mood}` : ''}:</strong> ${text}`;
+    chatPanel.appendChild(msg);
     scrollToBottom();
   };
 
+  // Mood-based emoji (simplified)
+  const getMoodEmoji = (text) => {
+    const lower = text.toLowerCase();
+    if (lower.includes('sleep') || lower.includes('bored')) return '😴';
+    if (lower.includes('happy') || lower.includes('yay')) return '😺';
+    if (lower.includes('sad') || lower.includes('help')) return '😿';
+    if (lower.includes('cozy') || lower.includes('purr')) return '🐾';
+    return '';
+  };
+
+  // Handle form submission
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = userInput.value.trim();
     if (!input) return;
 
-    createMessage('user', input);
+    addMessage('You', input);
     userInput.value = '';
-
-    createMessage('opal', '...'); // typing placeholder
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input })
       });
 
       const data = await res.json();
-      chatPanel.lastChild.remove(); // remove "..." placeholder
-      createMessage('opal', data.reply || 'Hmm... nothing to say 😽');
+      const mood = getMoodEmoji(data.reply);
+      addMessage('Opal', data.reply, mood);
     } catch (err) {
-      chatPanel.lastChild.remove();
-      createMessage('opal', 'Oops! I got tangled in yarn 🧶');
+      addMessage('Opal', 'Oops! I got my paws tangled in the internet 😿');
+      console.error('Chat error:', err);
     }
   });
 });
