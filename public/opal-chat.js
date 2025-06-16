@@ -1,3 +1,7 @@
+// opal-chat.js
+// Front-end logic for the Opal chatbot interface
+
+// Generate a time-based greeting
 function getTimeGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return "☀️ Good meowning! Did you dream of yarn?";
@@ -5,6 +9,7 @@ function getTimeGreeting() {
   return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
 }
 
+// Map text tokens to emojis
 const emojiMap = {
   '*yawn*': '😪',
   '*purr*': '😸',
@@ -14,57 +19,105 @@ const emojiMap = {
   '*meow*': '🐱',
 };
 
+// Replace tokens in a string with their corresponding emojis
 function parseEmojis(text) {
-  for (const [txt, emoji] of Object.entries(emojiMap)) {
-    text = text.replaceAll(txt, emoji);
+  for (const [token, emoji] of Object.entries(emojiMap)) {
+    text = text.replaceAll(token, emoji);
   }
   return text;
 }
 
-function createMessage(sender, text) {
+// Append a message bubble to the chat panel
+function createMessage(sender, text, options = {}) {
   const chatPanel = document.getElementById('chat-panel');
   if (!chatPanel) return;
 
-  const msg = document.createElement('div');
-  msg.className = `p-3 rounded-md text-sm max-w-[80%] ${
+  const msgEl = document.createElement('div');
+  msgEl.className = `p-3 rounded-md text-sm max-w-[80%] ${
     sender === 'user'
       ? 'self-end bg-primary-100 text-primary-900'
       : 'self-start bg-opal-blush text-opal-deep'
   }`;
 
-  msg.textContent = `${sender === 'user' ? 'You' : 'Opal'}: ${parseEmojis(text)}`;
-  chatPanel.appendChild(msg);
+  if (options.isLoading) {
+    msgEl.dataset.loading = 'true';
+    msgEl.textContent = text;
+  } else {
+    const prefix = sender === 'user' ? 'You: ' : 'Opal: ';
+    msgEl.textContent = prefix + parseEmojis(text);
+  }
+
+  chatPanel.appendChild(msgEl);
   chatPanel.scrollTop = chatPanel.scrollHeight;
+  return msgEl;
 }
 
+// Persist chat history in sessionStorage
 function saveChat(sender, text) {
   const history = JSON.parse(sessionStorage.getItem('opal-chat') || '[]');
   history.push({ sender, text });
   sessionStorage.setItem('opal-chat', JSON.stringify(history));
 }
 
+// Load saved messages on page load
 function loadChatMemory() {
   const history = JSON.parse(sessionStorage.getItem('opal-chat') || '[]');
-  history.forEach(({ sender, text }) => createMessage(sender, text));
-  if (history.length === 0) createMessage('opal', getTimeGreeting());
+  if (history.length === 0) {
+    createMessage('opal', getTimeGreeting());
+  } else {
+    history.forEach(({ sender, text }) => createMessage(sender, text));
+  }
 }
 
+// Scroll chat panel to bottom
 function scrollToBottom() {
   const chatPanel = document.getElementById('chat-panel');
   if (chatPanel) chatPanel.scrollTop = chatPanel.scrollHeight;
 }
 
+// Show a sleepy message if idle
 function createSleepMessage() {
   const chatPanel = document.getElementById('chat-panel');
   if (!chatPanel) return;
 
-  const msg = document.createElement('div');
-  msg.className = 'self-start bg-purple-100 text-black p-3 rounded-md text-sm max-w-[80%]';
-  msg.textContent = '💤 Opal has curled up for a nap...';
-  chatPanel.appendChild(msg);
+  const msgEl = document.createElement('div');
+  msgEl.className = 'self-start bg-purple-100 text-black p-3 rounded-md text-sm max-w-[80%]';
+  msgEl.textContent = '💤 Opal has curled up for a nap...';
+  chatPanel.appendChild(msgEl);
   scrollToBottom();
 }
 
+// Send user input to the backend and handle errors
+async function sendToOpal(msg) {
+  const payload = {
+    messages: [
+      { role: 'system', content: 'You are Opal, a friendly cat-bot.' },
+      { role: 'user',  content: msg }
+    ]
+  };
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      const serverMsg = errJson.error?.message || errJson.message || `HTTP ${res.status}`;
+      throw new Error(serverMsg);
+    }
+
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch (err) {
+    console.error('❗️ Opal chat error:', err);
+    return `*yawn* ${err.message}`;
+  }
+}
+
+// Initialize chat UI and event listeners
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('opal-form');
   const input = document.getElementById('opal-input');
@@ -77,10 +130,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   let lastInteraction = Date.now();
-
   loadChatMemory();
   scrollToBottom();
 
+  // After 60s of inactivity, show sleep message every 30s
   setInterval(() => {
     if (Date.now() - lastInteraction > 60000) createSleepMessage();
   }, 30000);
@@ -91,36 +144,30 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!msg) return;
 
     lastInteraction = Date.now();
-
     createMessage('user', msg);
     saveChat('user', msg);
     input.value = '';
 
     if (typingIndicator) typingIndicator.style.display = 'block';
-    createMessage('opal', '...');
+    createMessage('opal', '…typing…', { isLoading: true });
 
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg }),
-      });
+    // Get Opal's reply
+    const reply = await sendToOpal(msg);
 
-      const data = await res.json();
-      chatPanel.lastChild.remove();
-      const reply = data.reply || '*yawn* That didn’t go through.';
-      createMessage('opal', reply);
-      saveChat('opal', reply);
-    } catch (err) {
-      chatPanel.lastChild.remove();
-      console.error('Chat error:', err);
-      // show the real message, or fall back to your cute default
-      const msg = err.message?.includes('Server returned')
-        ? err.message
-        : 'Opal tangled her code 🧶';
-     createMessage('opal', `Oops! ${msg}`);
-    } finally {
-      if (typingIndicator) typingIndicator.style.display = 'none';
+    // Remove loading bubble and show reply
+    const last = chatPanel.lastChild;
+    if (last && last.dataset.loading) last.remove();
+    createMessage('opal', reply);
+    saveChat('opal', reply);
+
+    if (typingIndicator) typingIndicator.style.display = 'none';
+  });
+
+  // Send on Enter without shift
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.dispatchEvent(new Event('submit'));
     }
   });
 });

@@ -1,41 +1,16 @@
 ---
 ---
 
-<!-- Floating chat UI with scroll, typing, and idle sleep -->
+<!-- Opal Chat Component -->
 <div 
-  x-data="{
-    open: false,
-    typing: false,
-    lastInteraction: Date.now(),
-    sleepTimer: null,
-
-    wakeUp() {
-      this.lastInteraction = Date.now();
-    },
-
-    setupIdleCheck() {
-      this.sleepTimer = setInterval(() => {
-        const now = Date.now();
-        if (now - this.lastInteraction > 60000) {
-          const chatPanel = document.getElementById('chat-panel');
-          if (!chatPanel) return;
-          const msg = document.createElement('div');
-          msg.className = 'self-start bg-purple-100 text-black p-3 rounded-md text-sm max-w-[80%]';
-          msg.textContent = '💤 Opal has curled up for a nap...';
-          chatPanel.appendChild(msg);
-          chatPanel.scrollTop = chatPanel.scrollHeight;
-        }
-      }, 30000);
-    }
-  }"
-  x-init="setupIdleCheck()"
+  x-data="{ open: false }"
   class="fixed bottom-6 right-6 z-50"
 >
-  <!-- Floating Chat Button -->
+  <!-- Toggle Button -->
   <button 
-    @click="open = !open; if(open) wakeUp()" 
-    class="w-16 h-16 rounded-full shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700 hover:scale-105 transition-all"
+    @click="open = !open"
     aria-label="Chat with Opal the Cat"
+    class="w-16 h-16 rounded-full shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700 hover:scale-105 transition-all"
   >
     <img 
       src="/opal-avatar.jpg" 
@@ -44,7 +19,7 @@
     />
   </button>
 
-  <!-- Chat Box -->
+  <!-- Chat Window -->
   <div 
     x-show="open" 
     x-transition 
@@ -62,17 +37,13 @@
     </div>
 
     <!-- Chat Panel -->
-<div
-  id="chat-panel"
-  class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
-  style="scrollbar-width: auto; -ms-overflow-style: auto;"
-></div>
+    <div
+      id="chat-panel"
+      class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
+      style="scrollbar-width: auto; -ms-overflow-style: auto;"
+    ></div>
 
-
-    <!-- Typing Indicator -->
-    <div x-show="typing" class="italic text-gray-400 dark:text-gray-500 px-3 py-1">Opal is thinking... ✨</div>
-
-    <!-- Chat Form -->
+    <!-- Input Form -->
     <form id="opal-form" class="flex items-center gap-2 mt-3">
       <input 
         id="opal-input"
@@ -86,5 +57,5 @@
   </div>
 </div>
 
-<!-- Chat Logic -->
+<!-- Include the chat logic script -->
 <script src="/opal-chat.js" is:inline></script>
