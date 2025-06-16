@@ -197,15 +197,3 @@
   @apply outline-hidden ring-2 ring-primary-500 dark:ring-primary-400;
 }
 
-.chat-panel {
-  max-height: 100%;
-  overflow-y: auto;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.chat-panel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-
-
