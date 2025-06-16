@@ -4,8 +4,8 @@ import { AzureOpenAI } from "openai";
 import { AzureKeyCredential } from "@azure/core-auth";
 
 const client = new AzureOpenAI({
-  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
-  credential: new AzureKeyCredential(process.env.AZURE_OPENAI_API_KEY),
+  endpoint: import.meta.env.AZURE_OPENAI_ENDPOINT,
+  credential: new AzureKeyCredential(import.meta.env.AZURE_OPENAI_API_KEY),
   apiVersion: "2025-01-01-preview",
 });
 
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   try {
     const { messages } = req.body;
     const response = await client.chat.completions.create({
-      deploymentId: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
+      deploymentId: import.meta.env.AZURE_OPENAI_DEPLOYMENT,
       messages,
     });
     return res.status(200).json(response);
