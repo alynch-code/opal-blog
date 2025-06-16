@@ -1,5 +1,23 @@
 import type { APIRoute } from 'astro';
 
+// pages/api/chat.js
+import { AzureOpenAI } from "openai";
+import { AzureKeyCredential } from "@azure/core-auth";
+
+const client = new AzureOpenAI({
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  credential: new AzureKeyCredential(process.env.AZURE_OPENAI_KEY),
+  apiVersion: "2023-11-15-preview"
+});
+
+export default async function handler(req, res) {
+  const response = await client.chat.completions.create({
+    deploymentId: process.env.AZURE_OPENAI_DEPLOYMENT,
+    messages: req.body.messages
+  });
+  res.status(200).json(response);
+}
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const { message } = await request.json();
