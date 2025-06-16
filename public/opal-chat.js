@@ -113,7 +113,12 @@ window.addEventListener('DOMContentLoaded', () => {
       saveChat('opal', reply);
     } catch (err) {
       chatPanel.lastChild.remove();
-      createMessage('opal', 'Oops! Opal tangled her code 🧶');
+      console.error('Chat error:', err);
+      // show the real message, or fall back to your cute default
+      const msg = err.message?.includes('Server returned')
+        ? err.message
+        : 'Opal tangled her code 🧶';
+     createMessage('opal', `Oops! ${msg}`);
     } finally {
       if (typingIndicator) typingIndicator.style.display = 'none';
     }
