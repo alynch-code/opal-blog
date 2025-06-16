@@ -11,7 +11,7 @@ const client = new AzureOpenAI({
   apiVersion: "2025-01-01-preview"
 });
 
-export const post: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
   const { messages } = await request.json();
   try {
     const response = await client.chat.completions.create({
