@@ -7,7 +7,7 @@ import { AzureKeyCredential } from "@azure/core-auth";
 const client = new AzureOpenAI({
   endpoint: process.env.AZURE_OPENAI_ENDPOINT,
   credential: new AzureKeyCredential(process.env.AZURE_OPENAI_KEY),
-  apiVersion: "2023-11-15-preview"
+  apiVersion: "2025-01-01-preview"
 });
 
 export default async function handler(req, res) {
