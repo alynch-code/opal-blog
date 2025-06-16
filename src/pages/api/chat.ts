@@ -1,5 +1,6 @@
 // pages/api/chat.ts
 
+import type { APIRoute } from 'astro';
 import { AzureOpenAI } from "openai";
 import { AzureKeyCredential } from "@azure/core-auth";
 
@@ -9,24 +10,22 @@ const client = new AzureOpenAI({
   apiVersion: "2025-01-01-preview",
 });
 
-export default async function handler(req, res) {
+export const post: APIRoute = async ({ request }) => {
   try {
-    const { messages } = req.body;
+    const { messages } = await request.json();
     const response = await client.chat.completions.create({
-      deploymentId: import.meta.env.AZURE_OPENAI_DEPLOYMENT,
-      messages,
+      deploymentId: import.meta.env.AZURE_OPENAI_DEPLOYMENT_NAME,
+      messages
     });
-    return res.status(200).json(response);
-  } catch (err) {
-    // 1) Log full error to Vercel/Azure logs
-    console.error("🛑 Chat API Error:", err);
-
-    // 2) Return the actual message+stack so your front-end can show it
-    return res.status(500).json({
-      error: {
-        message: err.message,
-        stack: err.stack,             // you can remove this after debugging
-      }
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
     });
+  } catch (err: any) {
+    console.error('🛑 Chat API Error:', err);
+    return new Response(
+      JSON.stringify({ error: { message: err.message } }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
-}
+};
