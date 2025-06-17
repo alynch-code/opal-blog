@@ -1,42 +1,41 @@
-// src/pages/api/chat.ts
-import type { APIRoute } from 'astro';
-import { AzureOpenAI } from 'openai';
-
 export const POST: APIRoute = async ({ request }) => {
-  // Load configuration directly from environment
-  const endpoint   = import.meta.env.AZURE_OPENAI_ENDPOINT!;
-  const apiKey     = import.meta.env.AZURE_OPENAI_API_KEY!;
+  // 1) Pull in your env‐vars
+  let endpoint   = import.meta.env.AZURE_OPENAI_ENDPOINT!;
+  const apiKey   = import.meta.env.AZURE_OPENAI_API_KEY!;
   const apiVersion = import.meta.env.AZURE_OPENAI_API_VERSION!;
-  const deployment = import.meta.env.AZURE_OPENAI_DEPLOYMENT!;
+  const deployment = import.meta.env.AZURE_OPENAI_DEPLOYMENT_NAME!;
 
-  // Initialize the Azure OpenAI client
-  const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment });
+  // 2) Sanitize the endpoint (no trailing slash)
+  endpoint = endpoint.replace(/\/+$/, "");
 
-  // Parse incoming messages
-  const { messages } = await request.json();
+  // 3) Log exactly what we’re calling
+  console.log("🔍 Calling Azure:", {
+    url:    `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`,
+    apiKeyLoaded: !!apiKey,
+    deployment
+  });
 
+  // 4) List deployments to verify that “opal-35” really exists here
   try {
-    // Create a chat completion
-    const result = await client.chat.completions.create({
-      messages,
-      max_tokens: 800,
-      temperature: 0.7,
-      top_p: 0.95,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stop: null
-    });
-
-    // Return the completion
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (e: any) {
-    console.error('🛑 Chat API Error:', e);
-    return new Response(
-      JSON.stringify({ error: { message: e.message } }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    const listResp = await fetch(
+      `${endpoint}/openai/deployments?api-version=${apiVersion}`,
+      { headers: { "api-key": apiKey } }
     );
+    const list = await listResp.json();
+    console.log("🗂️  Deployments on this endpoint:", JSON.stringify(list, null, 2));
+  } catch (e) {
+    console.error("⚠️ Could not list deployments:", e);
+  }
+
+  // 5) Now call the chat completion
+  const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment });
+  const { messages } = await request.json();
+  try {
+    const result = await client.chat.completions.create({ messages });
+    return new Response(JSON.stringify(result), { status: 200, headers: { "Content-Type": "application/json" } });
+  } catch (err: any) {
+    console.error("🛑 Chat API Error:", err);
+    return new Response(JSON.stringify({ error: { message: err.message } }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 };
+
