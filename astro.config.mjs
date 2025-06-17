@@ -9,7 +9,7 @@ export default defineConfig({
   integrations: [alpinejs()],
   vite: {
     plugins: [tailwindcss()],
-    envPrefix: 'CC_',
+    envPrefix: ['CC_', 'AZURE_OPENAI_'],
     build: {
       rollupOptions: {
         external: ['openai'] // 👈 prevent bundling

@@ -3,13 +3,21 @@ import type { APIRoute } from 'astro';
 import { AzureOpenAI } from 'openai';
 
 export const POST: APIRoute = async ({ request }) => {
-  // Load configuration from Node environment variables
-  const endpoint   = process.env.AZURE_OPENAI_ENDPOINT;
-  const apiKey     = process.env.AZURE_OPENAI_API_KEY;
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
-  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
+  // Load configuration from environment variables
+  const endpoint   = import.meta.env.AZURE_OPENAI_ENDPOINT ?? process.env.AZURE_OPENAI_ENDPOINT;
+  const apiKey     = import.meta.env.AZURE_OPENAI_API_KEY ?? process.env.AZURE_OPENAI_API_KEY;
+  const apiVersion = import.meta.env.AZURE_OPENAI_API_VERSION ?? process.env.AZURE_OPENAI_API_VERSION;
+  const deployment = import.meta.env.AZURE_OPENAI_DEPLOYMENT_NAME ?? process.env.AZURE_OPENAI_DEPLOYMENT;
 
-  // Validate that all required environment variables are present
+  // Debug: Log environment variables to verify they are loaded
+  console.log('ENV VARS:', {
+    ENDPOINT: endpoint,
+    KEY:      apiKey ? '✔️' : '❌',
+    VERSION:  apiVersion,
+    DEPLOY:   deployment
+  });
+
+  // Validate that all required variables are present
   if (!endpoint || !apiKey || !apiVersion || !deployment) {
     console.error('🛑 Missing one or more AZURE_OPENAI_* environment variables.');
     return new Response(
@@ -18,11 +26,8 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // Sanitize endpoint (remove trailing slash if any)
+  // Sanitize endpoint (remove trailing slash)
   const sanitizedEndpoint = endpoint.replace(/\/+$/, '');
-
-  // Log the exact URL and deployment for diagnostics
-  console.log('🔍 Azure Config:', { sanitizedEndpoint, apiVersion, deployment });
 
   // Initialize the Azure OpenAI client
   const client = new AzureOpenAI({
@@ -50,4 +55,5 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 };
+
 
