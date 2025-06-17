@@ -2,9 +2,10 @@
 ---
 
 <!-- Opal Chat Component -->
-<div 
+<div
   x-data="{ open: false }"
   class="fixed bottom-6 right-6 z-50"
+  data-opal-chat="floating"
 >
   <!-- Toggle Button -->
   <button 
@@ -34,28 +35,26 @@
         <span class="font-semibold">Opal the Cat</span>
       </div>
       <div class="flex items-center gap-2">
-        <button id="opal-goodbye" class="text-xs text-gray-400 hover:text-gray-700 dark:hover:text-white">Goodbye</button>
+        <button class="opal-goodbye text-xs text-gray-400 hover:text-gray-700 dark:hover:text-white">Goodbye</button>
         <button @click="open = false" class="text-gray-400 hover:text-gray-700 dark:hover:text-white">&times;</button>
       </div>
     </div>
 
     <!-- Chat Panel -->
-    <div
-      id="chat-panel"
-      class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
-      style="scrollbar-width: none; -ms-overflow-style: none;"
-    ></div>
+      <div
+        class="chat-panel overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
+        style="scrollbar-width: none; -ms-overflow-style: none;"
+      ></div>
 
 
     <!-- Input Form -->
-    <form id="opal-form" class="flex items-center gap-2 mt-3">
-      <input 
-        id="opal-input"
-        type="text" 
-        placeholder="Ask something cozy..." 
-        class="flex-grow px-3 py-2 rounded-lg border bg-white text-black"
-        required
-      />
+      <form class="opal-form flex items-center gap-2 mt-3">
+        <input
+          class="opal-input flex-grow px-3 py-2 rounded-lg border bg-white text-black"
+          type="text"
+          placeholder="Ask something cozy..."
+          required
+        />
       <button type="submit" class="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Send</button>
     </form>
   </div>

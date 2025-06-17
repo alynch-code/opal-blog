@@ -28,8 +28,7 @@ function parseEmojis(text) {
 }
 
 // Append a message bubble to the chat panel
-function createMessage(sender, text, options = {}) {
-  const chatPanel = document.getElementById('chat-panel');
+function createMessage(chatPanel, sender, text, options = {}) {
   if (!chatPanel) return;
 
   const msgEl = document.createElement('div');
@@ -54,29 +53,28 @@ function createMessage(sender, text, options = {}) {
 
 // Persist chat history in sessionStorage
 // Fetch chat history from the server
-async function loadChatMemory() {
+async function loadChatMemory(chatPanel) {
   try {
     const res = await fetch('/api/chat');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const history = data.history || [];
     if (history.length === 0) {
-      createMessage('opal', getTimeGreeting());
+      createMessage(chatPanel, 'opal', getTimeGreeting());
     } else {
       history.forEach(({ role, content }) => {
         const sender = role === 'assistant' ? 'opal' : 'user';
-        createMessage(sender, content);
+        createMessage(chatPanel, sender, content);
       });
     }
   } catch (err) {
     console.error('Failed to load chat history:', err);
-    createMessage('opal', getTimeGreeting());
+    createMessage(chatPanel, 'opal', getTimeGreeting());
   }
 }
 
 // Clear history both locally and on the server
-async function clearChat() {
-  const chatPanel = document.getElementById('chat-panel');
+async function clearChat(chatPanel) {
   if (chatPanel) chatPanel.innerHTML = '';
   try {
     await fetch('/api/chat', {
@@ -90,21 +88,19 @@ async function clearChat() {
 }
 
 // Scroll chat panel to bottom
-function scrollToBottom() {
-  const chatPanel = document.getElementById('chat-panel');
+function scrollToBottom(chatPanel) {
   if (chatPanel) chatPanel.scrollTop = chatPanel.scrollHeight;
 }
 
 // Show a sleepy message if idle
-function createSleepMessage() {
-  const chatPanel = document.getElementById('chat-panel');
+function createSleepMessage(chatPanel) {
   if (!chatPanel) return;
 
   const msgEl = document.createElement('div');
   msgEl.className = 'self-start bg-purple-100 text-black p-3 rounded-md text-sm max-w-[80%]';
   msgEl.textContent = '💤 Opal has curled up for a nap...';
   chatPanel.appendChild(msgEl);
-  scrollToBottom();
+  scrollToBottom(chatPanel);
 }
 
 // Send user input to the backend and handle errors
@@ -138,60 +134,63 @@ async function sendToOpal(msg) {
 }
 
 // Initialize chat UI and event listeners
-window.addEventListener('DOMContentLoaded', async () => {
-  const form = document.getElementById('opal-form');
-  const input = document.getElementById('opal-input');
-  const chatPanel = document.getElementById('chat-panel');
-  const byeBtn = document.getElementById('opal-goodbye');
-  const typingIndicator = document.querySelector('[x-data] [x-show="typing"]');
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-opal-chat]').forEach(async (root) => {
+    const form = root.querySelector('.opal-form');
+    const input = root.querySelector('.opal-input');
+    const chatPanel = root.querySelector('.chat-panel');
+    const byeBtn = root.querySelector('.opal-goodbye');
+    const typingIndicator = root.querySelector('[x-data] [x-show="typing"]');
 
-  if (!form || !input || !chatPanel) {
-    console.warn('Chat elements not found on page.');
-    return;
-  }
+    if (!form || !input || !chatPanel) {
+      console.warn('Chat elements not found in', root);
+      return;
+    }
 
-  let lastInteraction = Date.now();
-  await loadChatMemory();
-  scrollToBottom();
+    let lastInteraction = Date.now();
+    await loadChatMemory(chatPanel);
+    scrollToBottom(chatPanel);
 
-  // After 60s of inactivity, show sleep message every 30s
-  setInterval(() => {
-    if (Date.now() - lastInteraction > 60000) createSleepMessage();
-  }, 30000);
+    // After 60s of inactivity, show sleep message every 30s
+    setInterval(() => {
+      if (Date.now() - lastInteraction > 60000) createSleepMessage(chatPanel);
+    }, 30000);
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    lastInteraction = Date.now();
-    createMessage('user', msg);
-    input.value = '';
-
-    if (typingIndicator) typingIndicator.style.display = 'block';
-    createMessage('opal', '…typing…', { isLoading: true });
-
-    // Get Opal's reply
-    const reply = await sendToOpal(msg);
-
-    // Remove loading bubble and show reply
-    const last = chatPanel.lastChild;
-    if (last && last.dataset.loading) last.remove();
-    createMessage('opal', reply);
-
-    if (typingIndicator) typingIndicator.style.display = 'none';
-  });
-
-  // Send on Enter without shift
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      form.dispatchEvent(new Event('submit'));
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      lastInteraction = Date.now();
+      createMessage(chatPanel, 'user', msg);
+      input.value = '';
+
+      if (typingIndicator) typingIndicator.style.display = 'block';
+      createMessage(chatPanel, 'opal', '…typing…', { isLoading: true });
+
+      // Get Opal's reply
+      const reply = await sendToOpal(msg);
+
+      // Remove loading bubble and show reply
+      const last = chatPanel.lastChild;
+      if (last && last.dataset.loading) last.remove();
+      createMessage(chatPanel, 'opal', reply);
+
+      if (typingIndicator) typingIndicator.style.display = 'none';
+    });
+
+    // Send on Enter without shift
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    if (byeBtn) {
+      byeBtn.addEventListener('click', async () => {
+        await clearChat(chatPanel);
+      });
     }
   });
-   if (byeBtn) {
-    byeBtn.addEventListener('click', async () => {
-      await clearChat();
-    });
-  }
 });
