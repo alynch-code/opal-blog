@@ -53,19 +53,39 @@ function createMessage(sender, text, options = {}) {
 }
 
 // Persist chat history in sessionStorage
-function saveChat(sender, text) {
-  const history = JSON.parse(sessionStorage.getItem('opal-chat') || '[]');
-  history.push({ sender, text });
-  sessionStorage.setItem('opal-chat', JSON.stringify(history));
+// Fetch chat history from the server
+async function loadChatMemory() {
+  try {
+    const res = await fetch('/api/chat');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const history = data.history || [];
+    if (history.length === 0) {
+      createMessage('opal', getTimeGreeting());
+    } else {
+      history.forEach(({ role, content }) => {
+        const sender = role === 'assistant' ? 'opal' : 'user';
+        createMessage(sender, content);
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load chat history:', err);
+    createMessage('opal', getTimeGreeting());
+  }
 }
 
-// Load saved messages on page load
-function loadChatMemory() {
-  const history = JSON.parse(sessionStorage.getItem('opal-chat') || '[]');
-  if (history.length === 0) {
-    createMessage('opal', getTimeGreeting());
-  } else {
-    history.forEach(({ sender, text }) => createMessage(sender, text));
+// Clear history both locally and on the server
+async function clearChat() {
+  const chatPanel = document.getElementById('chat-panel');
+  if (chatPanel) chatPanel.innerHTML = '';
+  try {
+    await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clear: true })
+    });
+  } catch (err) {
+    console.error('Failed to clear chat:', err);
   }
 }
 
@@ -118,10 +138,11 @@ async function sendToOpal(msg) {
 }
 
 // Initialize chat UI and event listeners
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('opal-form');
   const input = document.getElementById('opal-input');
   const chatPanel = document.getElementById('chat-panel');
+  const byeBtn = document.getElementById('opal-goodbye');
   const typingIndicator = document.querySelector('[x-data] [x-show="typing"]');
 
   if (!form || !input || !chatPanel) {
@@ -130,7 +151,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   let lastInteraction = Date.now();
-  loadChatMemory();
+  await loadChatMemory();
   scrollToBottom();
 
   // After 60s of inactivity, show sleep message every 30s
@@ -145,7 +166,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     lastInteraction = Date.now();
     createMessage('user', msg);
-    saveChat('user', msg);
     input.value = '';
 
     if (typingIndicator) typingIndicator.style.display = 'block';
@@ -158,7 +178,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const last = chatPanel.lastChild;
     if (last && last.dataset.loading) last.remove();
     createMessage('opal', reply);
-    saveChat('opal', reply);
 
     if (typingIndicator) typingIndicator.style.display = 'none';
   });
@@ -170,4 +189,9 @@ window.addEventListener('DOMContentLoaded', () => {
       form.dispatchEvent(new Event('submit'));
     }
   });
+   if (byeBtn) {
+    byeBtn.addEventListener('click', async () => {
+      await clearChat();
+    });
+  }
 });

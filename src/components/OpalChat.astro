@@ -33,15 +33,18 @@
         <img src="/opal-avatar.jpg" alt="Opal Avatar" class="w-6 h-6 rounded-full" />
         <span class="font-semibold">Opal the Cat</span>
       </div>
-      <button @click="open = false" class="text-gray-400 hover:text-gray-700 dark:hover:text-white">&times;</button>
+      <div class="flex items-center gap-2">
+        <button id="opal-goodbye" class="text-xs text-gray-400 hover:text-gray-700 dark:hover:text-white">Goodbye</button>
+        <button @click="open = false" class="text-gray-400 hover:text-gray-700 dark:hover:text-white">&times;</button>
+      </div>
     </div>
 
     <!-- Chat Panel -->
     <div
-      41        id="chat-panel"
-42        class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
-43        style="scrollbar-width: none; -ms-overflow-style: none;"
-44      ></div>
+      id="chat-panel"
+      class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    ></div>
 
 
     <!-- Input Form -->

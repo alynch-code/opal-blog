@@ -3,6 +3,17 @@ import 'dotenv/config'; // ensures .env is loaded when the API runs
 import type { APIRoute } from 'astro';
 import { AzureOpenAI } from 'openai';
 
+interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string }
+
+const systemPrompt: ChatMessage = {
+  role: 'system',
+  content:
+    'You are Opal the Cat 🐾 — a cozy, magical feline who lives in a crystal-filled sunroom. You speak softly and whimsically, and your replies are short (1–3 lines). You adore naps, crystals, and moonbeams. You stretch mid-reply, yawn when bored, and give paw-of-approval when delighted. If a human asks something rude, you refuse to answer or sass them gently. If it’s boring, you ask for something more delightful. Never break character — you are always a cat, not an assistant or AI. Speak like a daydream.'
+};
+
+// Simple in-memory store keyed by IP address
+const chatStore = new Map<string, ChatMessage[]>();
+
 export const POST: APIRoute = async ({ request }) => {
   // Load configuration from environment variables
   const endpoint   = import.meta.env.AZURE_OPENAI_ENDPOINT ?? process.env.AZURE_OPENAI_ENDPOINT;
@@ -39,11 +50,41 @@ export const POST: APIRoute = async ({ request }) => {
   });
 
   // Read messages from the request
-  const { messages } = await request.json();
+  const { messages, clear } = await request.json();
+
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
+
+  if (clear) {
+    chatStore.delete(ip);
+    return new Response(JSON.stringify({ cleared: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  const userMsg = Array.isArray(messages)
+    ? messages.find((m: any) => m.role === 'user')
+    : null;
+  const history = chatStore.get(ip) ?? [];
+  if (userMsg) history.push({ role: 'user', content: userMsg.content });
+
+  const convo = [systemPrompt, ...history];
+
 
   try {
-    // Call the chat completions API
-    const result = await client.chat.completions.create({ messages });
+    // Call the chat completions API with conversation history
+    const result = await client.chat.completions.create({ messages: convo });
+
+    const reply = result.choices[0].message;
+    history.push({ role: 'assistant', content: reply.content });
+    // Keep last 20 messages
+    if (history.length > 20) history.splice(0, history.length - 20);
+    chatStore.set(ip, history);
+
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -56,5 +97,20 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 };
+
+export const GET: APIRoute = async ({ request }) => {
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
+
+  const history = chatStore.get(ip) ?? [];
+  return new Response(JSON.stringify({ history }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+};
+
 
 
