@@ -1,0 +1,35 @@
+---
+---
+
+<div class="max-w-md mx-auto bg-white dark:bg-gray-900 shadow-2xl rounded-xl p-4 text-sm text-gray-800 dark:text-gray-100 flex flex-col space-y-3">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <img src="/opal-avatar.jpg" alt="Opal Avatar" class="w-6 h-6 rounded-full" />
+      <span class="font-semibold">Opal the Cat</span>
+    </div>
+    <button id="opal-goodbye" class="text-xs text-gray-400 hover:text-gray-700 dark:hover:text-white">Goodbye</button>
+  </div>
+
+  <!-- Chat Panel -->
+  <div
+    id="chat-panel"
+    class="overflow-y-auto max-h-[300px] h-[300px] px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md space-y-3 bg-white dark:bg-gray-900"
+    style="scrollbar-width: none; -ms-overflow-style: none;"
+  ></div>
+
+  <!-- Input Form -->
+  <form id="opal-form" class="flex items-center gap-2">
+    <input
+      id="opal-input"
+      type="text"
+      placeholder="Ask something cozy..."
+      class="flex-grow px-3 py-2 rounded-lg border bg-white text-black"
+      required
+    />
+    <button type="submit" class="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Send</button>
+  </form>
+</div>
+
+<!-- Include the chat logic script -->
+<script src="/opal-chat.js" is:inline></script>

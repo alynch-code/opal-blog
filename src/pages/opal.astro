@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/HeroSection.astro';
+import OpalChatInline from '../components/OpalChatInline.astro';
+---
+
+<Layout title="Opal the Cat - Your Feline Friend" showOpalChat={false}>
+  <Header />
+  <main>
+    <HeroSection
+      title="Meet Opal the Cat"
+      highlightText="Opal"
+      description="A playful digital kitty ready to chat and charm cat lovers."
+    />
+
+    <section class="section py-12 bg-gray-50 dark:bg-gray-800/50">
+      <div class="container-custom flex flex-col items-center text-center space-y-8">
+        <img src="/opal-avatar.jpg" alt="Opal the Cat" class="w-32 h-32 rounded-full shadow-lg" />
+        <p class="max-w-2xl text-lg text-gray-700 dark:text-gray-300">
+          Opal lounges in a crystal-filled sunroom, dreaming of moonbeams and new friends. Send her a message below and she'll reply in her whimsical feline style.
+        </p>
+        <OpalChatInline />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

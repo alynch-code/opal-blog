@@ -7,11 +7,13 @@ import OpalChat from '../components/OpalChat.astro';
 export interface Props {
   title: string;
   description?: string;
+  showOpalChat?: boolean;
 }
 
 const { 
   title, 
   description = "No noise. Just Nectar. Opal delivers cozy clarity with digital experiences designed to soothe and support."
+  showOpalChat = true,
 } = Astro.props;
 ---
 
@@ -76,6 +78,6 @@ const {
   async defer
 ></script>
       <!-- 🐱 Opal the Cat Chatbot -->
-    <OpalChat />
+       {showOpalChat ? <OpalChat /> : null}
   </body>
 </html>
