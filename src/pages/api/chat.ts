@@ -1,4 +1,5 @@
 // src/pages/api/chat.ts
+import 'dotenv/config'; // ensures .env is loaded when the API runs
 import type { APIRoute } from 'astro';
 import { AzureOpenAI } from 'openai';
 
