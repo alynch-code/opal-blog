@@ -1,19 +1,175 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import ContactForm from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import HeroSection from '../components/HeroSection.astro';
 ---
 
-<Layout title="Contact Us - Sassify">
+<Layout title="Contact Opal - Opal Design">
   <Header />
   <main>
-    <HeroSection 
-      title="Contact Us" 
-      description="We're here to help with any questions you might have about our services."
+     <HeroSection
+      title="Send a Message to Opal"
+      highlightText="Opal"
+      description="Whether you need a paw of support, have a curious idea, or just want to say meow—Opal's inbox is always open."
     />
-    <ContactForm />
+    
+    <!-- Contact Form -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+      <div class="container-custom">
+        <div class="max-w-2xl mx-auto p-8 bg-white dark:bg-secondary-800 rounded-xl shadow-md">
+          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-6">
+            <div>
+              <label for="name" class="block font-medium text-opal-deep dark:text-white">Your Name</label>
+              <input type="text" id="name" name="name" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="email" class="block font-medium text-opal-deep dark:text-white">Email</label>
+              <input type="email" id="email" name="_replyto" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="message" class="block font-medium text-opal-deep dark:text-white">Message</label>
+              <textarea id="message" name="message" rows="5" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">Send to Opal 🐾</button>
+          </form>
+        </div>
+
+        <p class="text-center text-secondary-600 dark:text-secondary-300 mt-8">
+          No message is too small or too silly. If it matters to you, it matters to Opal.
+        </p>
+
+        <div class="flex justify-center mt-10">
+          <img src="/opal-avatar.jpg" alt="Opal the cat with mail" class="w-48 h-48 object-cover rounded-full shadow-lg" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Particle Cursor Canvas -->
+    <canvas id="contact-canvas" class="fixed inset-0 w-full h-full pointer-events-none opacity-50"></canvas>
   </main>
   <Footer />
 </Layout> 
+
+<script>
+  const cleanupFunctions: Array<() => void> = [];
+
+  function initializeContactParticles() {
+    const canvasEl = document.getElementById('contact-canvas');
+    if (!(canvasEl instanceof HTMLCanvasElement)) return;
+
+    const context = canvasEl.getContext('2d');
+    if (!context) return;
+
+    const canvas: HTMLCanvasElement = canvasEl;
+    const ctx: CanvasRenderingContext2D = context;
+    let particles: Particle[] = [];
+    let animationFrameId: number | null = null;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      x: number;
+      y: number;
+      size: number;
+      color: string;
+      speedX: number;
+      speedY: number;
+      life: number;
+
+      constructor(x: number, y: number, color?: string) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 5 + 2;
+        this.color = color || `hsl(${Math.random() * 60 + 240}, 70%, 60%)`;
+        this.speedX = Math.random() * 3 - 1.5;
+        this.speedY = Math.random() * 3 - 1.5;
+        this.life = 100;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life -= 1;
+        if (this.size > 0.2) this.size -= 0.1;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].life <= 0 || particles[i].size <= 0.2) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    const addParticles = (
+      x: number,
+      y: number,
+      count: number,
+      burst = false
+    ) => {
+      for (let i = 0; i < count; i++) {
+        particles.push(
+          new Particle(
+            x,
+            y,
+            burst ? `hsl(${Math.random() * 60 + 40}, 100%, 60%)` : undefined
+          )
+        );
+      }
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      addParticles(e.clientX, e.clientY, 3);
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      addParticles(e.clientX, e.clientY, 20, true);
+    };
+
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('click', handleClick);
+
+    animate();
+
+    cleanupFunctions.push(() => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('click', handleClick);
+      particles = [];
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initializeContactParticles);
+  document.addEventListener('astro:page-load', initializeContactParticles);
+
+  document.addEventListener('astro:before-swap', () => {
+    cleanupFunctions.forEach((fn) => fn());
+    cleanupFunctions.length = 0;
+  });
+
+  window.addEventListener('unload', () => cleanupFunctions.forEach((fn) => fn()));
+</script>
