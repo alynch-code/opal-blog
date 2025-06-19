@@ -18,7 +18,7 @@ import HeroSection from '../components/HeroSection.astro';
     <section class="py-16 bg-white dark:bg-gray-800">
       <div class="container-custom">
         <div class="max-w-2xl mx-auto p-8 bg-white dark:bg-secondary-800 rounded-xl shadow-md">
-          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-6">
+          <form id="contact-form" action="/api/contact" method="POST" class="space-y-6">
             <div>
               <label for="name" class="block font-medium text-opal-deep dark:text-white">Your Name</label>
               <input type="text" id="name" name="name" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
