@@ -30,6 +30,25 @@ import HeroSection from '../components/HeroSection.astro';
             </div>
 
             <div>
+              <label for="inquiryType" class="block text-sm font-medium mb-1 text-opal-deep dark:text-opal-glow">
+                What’s this message about?
+              </label>
+              <select
+                id="inquiryType"
+                name="inquiryType"
+                required
+                class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              >
+                <option value="" disabled selected>Select an option that feels right 🐾</option>
+                <option value="just_saying_hi">Just saying hi or sending cozy vibes ✨</option>
+                <option value="custom_request">I have a custom request or idea 💡</option>
+                <option value="collab_interest">I'd love to collaborate or partner 🤝</option>
+                <option value="press_inquiry">Press or media inquiry 📰</option>
+                <option value="something_else">It’s something else but still important 🐱</option>
+              </select>
+            </div>
+
+            <div>
               <label for="message" class="block font-medium text-opal-deep dark:text-white">Message</label>
               <textarea id="message" name="message" rows="5" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white"></textarea>
             </div>
