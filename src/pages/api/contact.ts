@@ -1,28 +1,47 @@
-// src/pages/api/contact.ts
+import type { APIContext } from 'astro';
+import { Resend } from 'resend';
 
-export async function POST({ request }) {
+const resend = new Resend(import.meta.env.RESEND_API_KEY);
+
+export async function POST({ request }: APIContext): Promise<Response> {
   const data = await request.formData();
-  const name = data.get('name');
-  const email = data.get('email');
-  const inquiryType = data.get('inquiryType');
-  const message = data.get('message');
 
-  // Optional: log to console for now
-  console.log({ name, email, inquiryType, message });
+  const name = data.get('name')?.toString();
+  const email = data.get('_replyto')?.toString();
+  const inquiryType = data.get('inquiryType')?.toString();
+  const message = data.get('message')?.toString();
 
-  // Cozy auto-replies by type
-  const cozyReplies: Record<string, string> = {
-    'cozy-request': `Hi ${name}! Opal here 🐾 Thanks for your custom request. We'll cuddle up with your message and get back to you soon.`,
-    'partnership': `Hey ${name}, Opal's whiskers twitched at the word *partnership*. We'll paw through your proposal and follow up shortly!`,
-    'media': `Hi ${name}! We’re flattered you're reaching out about press or media. We’ll curl up with your note and get back to you soon.`,
-    'business': `Hi ${name}, thanks for your message! We'll be in touch soon to explore how we might work together.`,
-    'other': `Hi ${name}, thanks for saying hi! We'll respond shortly. Opal loves surprises. 🐱`,
+  if (!email || !message) {
+    return new Response('Missing fields', { status: 400 });
+  }
+
+  const subjectMap: Record<string, string> = {
+    just_saying_hi: 'New cozy message 💌',
+    custom_request: 'Custom request received 💡',
+    collab_interest: 'Partnership or collab inquiry 🤝',
+    press_inquiry: 'Press or media inquiry 📰',
+    something_else: 'Miscellaneous message 🐾',
   };
 
-  // Simulate sending email (later: integrate real provider)
-  console.log(`📬 Sending to ${email}:\n${cozyReplies[inquiryType] || cozyReplies['other']}`);
+  const subject = subjectMap[inquiryType || ''] || 'New message to Opal';
 
-  return new Response(JSON.stringify({ success: true }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  try {
+    await resend.emails.send({
+      from: 'Opal the Cat <meow@mail.opaldesignllc.com>',
+      to: ['meow@mail.opaldesignllc.com'],
+      subject,
+      html: `
+        <h2>You've got a new message from Opal's inbox 🐱</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Type:</strong> ${inquiryType}</p>
+        <p><strong>Message:</strong><br/>${message}</p>
+      `
+    });
+
+    return new Response('OK', { status: 200 });
+  } catch (err) {
+    console.error('Error sending email via Resend:', err);
+    return new Response('Email failed', { status: 500 });
+  }
 }
