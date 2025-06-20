@@ -176,15 +176,15 @@
 
 /* Animations */
 .fade-in {
-  @apply animate-fade-in;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .slide-up {
-  @apply animate-slide-up;
+  animation: slideUp 0.5s ease-in-out;
 }
 
 .slide-down {
-  @apply animate-slide-down;
+  animation: slideDown 0.5s ease-in-out;
 }
 
 /* Accessibility */
