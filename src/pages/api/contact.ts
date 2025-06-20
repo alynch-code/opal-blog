@@ -1,57 +1,52 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST({ request }: { request: Request }) {
-  const formData = await request.formData();
+  try {
+    const formData = await request.formData();
+    const name = formData.get('name')?.toString();
+    const email = formData.get('_replyto')?.toString();
+    const message = formData.get('message')?.toString();
+    const inquiryType = formData.get('inquiryType')?.toString();
 
-  const name = formData.get('name')?.toString() || 'Someone';
-  const email = formData.get('_replyto')?.toString();
-  const message = formData.get('message')?.toString();
-  const inquiryType = formData.get('inquiryType')?.toString();
+    if (!name || !email || !message || !inquiryType) {
+      return new Response('Missing required fields', { status: 400 });
+    }
 
-  if (!email || !message) {
-    return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
+    // Custom auto-response messages
+    const responses: Record<string, string> = {
+      just_saying_hi: "Thanks for the cozy vibes! Opal's whiskers twitched with joy ✨",
+      custom_request: "Thanks for your custom idea! We’ll curl up with it and reply soon 💡",
+      collab_interest: "We’re excited about a potential collab! Opal is purring in anticipation 🤝",
+      press_inquiry: "Me-wow! We’ll get back to you soon about your press inquiry 📰",
+      something_else: "Thanks for reaching out! Opal will be in touch shortly 🐱",
+    };
+
+    const autoReply = responses[inquiryType] || responses.something_else;
+
+    const { data, error } = await resend.emails.send({
+      from: 'Opal the Cat <meow@mail.opaldesignllc.com>',
+      to: email,
+      subject: '🐾 We got your message!',
+      html: `
+        <div style="font-family: sans-serif; font-size: 16px;">
+          <p>Hi ${name},</p>
+          <p>${autoReply}</p>
+          <p>We received your message and will get back to you if needed. In the meantime, feel free to explore <a href="https://www.opaldesignllc.com">Opal’s cozy world</a>.</p>
+          <p>Warmest paws,<br/>Opal 🐾</p>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error(error);
+      return new Response('Email failed to send', { status: 500 });
+    }
+
+    return new Response('OK', { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return new Response('Something went wrong', { status: 500 });
   }
-
-  // Internal email to you
-  await resend.emails.send({
-    from: 'Opal the Cat <meow@mail.opaldesignllc.com>',
-    to: 'meow@mail.opaldesignllc.com',
-    subject: `New ${inquiryType} from ${name}`,
-    text: `From: ${name} <${email}>\nInquiry Type: ${inquiryType}\n\n${message}`,
-  });
-
-  // Auto-reply logic
-  let reply = "Thanks for reaching out! We'll be in touch soon 🐾";
-
-  switch (inquiryType) {
-    case 'custom_request':
-      reply = "Thanks for your custom request! Opal’s paws are on it and we’ll reply soon 💡";
-      break;
-    case 'collab_interest':
-      reply = "Thanks for reaching out about collaborating! We'll review your idea and reply soon 🤝";
-      break;
-    case 'press_inquiry':
-      reply = "Thanks for the press inquiry! We'll follow up shortly 📰";
-      break;
-    case 'just_saying_hi':
-      reply = "Meow! Opal says thanks for the cozy vibes ✨ We'll purr back soon!";
-      break;
-    case 'something_else':
-      reply = "Thanks for sharing! We’ll curl up with your message and follow up shortly 🐱";
-      break;
-  }
-
-  await resend.emails.send({
-    from: 'Opal the Cat <meow@mail.opaldesignllc.com>',
-    to: email,
-    subject: 'Opal received your message 🐾',
-    text: reply,
-  });
-
-  return new Response(JSON.stringify({ success: true }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
 }

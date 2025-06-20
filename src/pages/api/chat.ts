@@ -43,10 +43,10 @@ export const POST: APIRoute = async ({ request }) => {
 
   // Initialize the Azure OpenAI client
   const client = new AzureOpenAI({
-    endpoint: sanitizedEndpoint,
     apiKey,
+    endpoint: sanitizedEndpoint,
     apiVersion,
-    deployment
+    deployment: deployment
   });
 
   // Read messages from the request
@@ -76,26 +76,28 @@ export const POST: APIRoute = async ({ request }) => {
 
 
   try {
-    // Call the chat completions API with conversation history
-    const result = await client.chat.completions.create({ messages: convo });
+  const result = await client.chat.completions.create({
+    messages: convo,
+    model: deployment, // Azure-specific: must specify the deployment name here
+  });
 
-    const reply = result.choices[0].message;
-    history.push({ role: 'assistant', content: reply.content });
-    // Keep last 20 messages
-    if (history.length > 20) history.splice(0, history.length - 20);
-    chatStore.set(ip, history);
+  const reply = result.choices[0].message;
+  history.push({ role: 'assistant', content: reply.content ?? '' });
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (err: any) {
-    console.error('🛑 Chat API Error:', err);
-    return new Response(
-      JSON.stringify({ error: { message: err.message } }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+  if (history.length > 20) history.splice(0, history.length - 20);
+  chatStore.set(ip, history);
+
+  return new Response(JSON.stringify(result), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+} catch (err: any) {
+  console.error('🛑 Chat API Error:', err);
+  return new Response(
+    JSON.stringify({ error: { message: err.message } }),
+    { status: 500, headers: { 'Content-Type': 'application/json' } }
+  );
+}
 };
 
 export const GET: APIRoute = async ({ request }) => {
