@@ -161,20 +161,27 @@ const sortedPosts = [...posts].sort(
         </a>
       </div>
       <script is:inline>
-        const filterLinks = document.querySelectorAll('[data-category-filter]');
-        const postsEl = document.querySelectorAll('[data-post]');
-        filterLinks.forEach((link) => {
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const category = link.dataset.categoryFilter;
-            filterLinks.forEach((l) => l.classList.remove('bg-primary-600', 'text-white'));
-            link.classList.add('bg-primary-600', 'text-white');
-            postsEl.forEach((post) => {
-              const matches = category === 'all' || post.dataset.postCategory === category;
-              post.classList.toggle('hidden', !matches);
-            });
+         const initFiltering = () => {
+          const filterLinks = document.querySelectorAll('[data-category-filter]');
+          const postsEl = document.querySelectorAll('[data-post]');
+
+          filterLinks.forEach((link) => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const category = link.dataset.categoryFilter;
+              filterLinks.forEach((l) => l.classList.remove('bg-primary-600', 'text-white'));
+              link.classList.add('bg-primary-600', 'text-white');
+
+              postsEl.forEach((post) => {
+                const matches = category === 'all' || post.dataset.postCategory === category;
+                post.classList.toggle('hidden', !matches);
+              });
           });
         });
+      };
+      
+         document.addEventListener('astro:page-load', initFiltering);
+        initFiltering();
       </script>
     </div>
   </main>
