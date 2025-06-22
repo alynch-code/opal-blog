@@ -1,99 +1,82 @@
 ---
 const features = [
   {
-    title: "Thoughtful Essays",
-    description: "Reflections on identity, intuition, burnout, and becoming.",
-    icon: "M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z",
-    color: "primary"
+    title: 'Form Help & Application Support',
+    description: 'Visa forms, housing apps, benefits, job portals—if it\u2019s confusing, we make it make sense.',
+    price: 'Starting at $40',
+    icon: '✍️'
   },
   {
-    title: "Template and Tools",
-    description: "Beautifully minimal Notion kits, self-check in tools, and clarity activities.",
-    icon: "M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z",
-    color: "secondary"
+    title: 'Personal Fixer Services',
+    description: 'Behind on tasks? Can\u2019t face the inbox? We\u2019ll help you catch up\u2014quietly and without judgment.',
+    price: 'Packages from $75',
+    icon: '🧾'
   },
   {
-    title: "Soft Start Strategies",
-    description: "Pathways to move forward gently; without shame, urgency, or burnout.",
-    icon: "m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25",
-    color: "accent"
+    title: 'Travel Concierge for Real People',
+    description: 'Trips for anxious flyers, solo explorers, or tired couples. We handle the planning\u2014you enjoy the trip.',
+    price: 'Custom quotes available',
+    icon: '✈️'
   },
   {
-    title: "Creative Activities",
-    description: "Gentle prompts, cozy activities, and playful structure for curious minds.",
-    icon: "M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42",
-    color: "warning"
+    title: 'Notary Services (Coming Soon)',
+    description: 'When your paperwork needs to be official, we\u2019ll handle that too\u2014right from your home or office.',
+    price: '',
+    icon: '🔏'
   },
-  {
-    title: "Energy Tracking",
-    description: "Learn to notice your own patterns, where your energy goes, what helps and what hurts.",
-    icon: "m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z",
-    color: "primary"
-  },
-  {
-    title: "Cozy Experiments",
-    description: "Low-risk, high-reward experiments to find your own rhythm and voice.",
-    icon: "M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5",
-    color: "secondary"
-  }
 ];
 ---
 
-<section id="features" class="section bg-gray-50 dark:bg-gray-800/50">
-  <div class="container-custom">
-    <div class="grid md:grid-cols-2 gap-8 items-center mb-16">
-      <div class="flex flex-col items-center text-center">
-      <span class="inline-block px-4 py-1 rounded-full bg-opal-glow dark:bg-opal-glow text-opal-ocean dark:text-opal-ocean font-medium text-sm mb-4">
-        What You'll Find Here
-      </span>
-      <h2 class="mb-6 text-gray-900 dark:text-white">No Formulas. No Guru Talk.</h2>
-      <p class="text-gray-600 dark:text-gray-300 max-w-xl">
-        Just grounded guidance, gentle design, and soulful tools to help you grow into the kind of power that doesn’t shout but resonates.
-      </p>
-      </div>
-      <div class="flex justify-center md:justify-end">
-    <lottie-player
-      src="/animation.json"
-      background="transparent"
-      speed="1"
-      style="max-width: 440px;"
-      class="w-full h-auto animate-soft-bounce"
-      loop
-      autoplay
-    ></lottie-player>
+<section id="meet-opal" class="section bg-opal-blush/40 dark:bg-secondary-800">
+  <div class="container-custom grid md:grid-cols-2 gap-8 items-center">
+    <img src="/opal-avatar.jpg" alt="Opal the Cat" class="w-48 h-48 rounded-full mx-auto" />
+    <div class="space-y-4 text-center md:text-left">
+      <h2 class="text-2xl font-semibold text-opal-deep dark:text-white">Meet Opal (Our Cat at Reception)</h2>
+      <p class="italic text-gray-700 dark:text-gray-300">“Hi. I’m Opal. I run the front desk. I don’t chase mice—I chase checklists.”</p>
+      <p class="text-gray-700 dark:text-gray-300">Need help filling something out? I know someone on the team who’s excellent at that.</p>
+      <p class="text-gray-700 dark:text-gray-300">Psst… I don’t do calls. But the humans do. Click the button.</p>
+    </div>
   </div>
+  </section>
+
+<section id="services" class="section bg-white dark:bg-secondary-900">
+  <div class="container-custom text-center mb-12">
+    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-4">What We Do</h2>
+    <p class="text-gray-600 dark:text-gray-300">Life gets messy. We help you untangle the hard stuff.</p>
   </div>
     
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {features.map((feature, index) => (
-        <div 
-          class="card p-6 border border-gray-200 dark:border-gray-700 slide-up" 
-          style={`animation-delay: ${index * 100}ms`}
-        >
-          <div class={`w-12 h-12 rounded-lg bg-${feature.color}-100 dark:bg-${feature.color}-900/30 flex items-center justify-center mb-6`}>
-            <svg 
-              class={`w-6 h-6 text-${feature.color}-600 dark:text-${feature.color}-400`} 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={feature.icon}></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
-          <p class="text-gray-600 dark:text-gray-300">{feature.description}</p>
-        </div>
-      ))}
+    <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="card p-6 border border-gray-200 dark:border-gray-700">
+      <h3 class="text-xl font-semibold mb-2">✍️ Form Help &amp; Application Support</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-2">Visa forms, housing apps, benefits, job portals—if it’s confusing, we make it make sense.</p>
+      <p class="font-semibold text-opal-deep dark:text-opal-glow">Starting at $40</p>
+    </div>
+    <div class="card p-6 border border-gray-200 dark:border-gray-700">
+      <h3 class="text-xl font-semibold mb-2">🧾 Personal Fixer Services</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-2">Behind on tasks? Can’t face the inbox? We’ll help you catch up—quietly and without judgment.</p>
+      <p class="font-semibold text-opal-deep dark:text-opal-glow">Packages from $75</p>
     </div>
     
-    <div class="mt-16 text-center">
-      <a href="/features" class="btn-primary">
-        Explore All Posts and Tools
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-        </svg>
-      </a>
+    <div class="card p-6 border border-gray-200 dark:border-gray-700">
+      <h3 class="text-xl font-semibold mb-2">✈️ Travel Concierge for Real People</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-2">Trips for anxious flyers, solo explorers, or tired couples. We handle the planning—you enjoy the trip.</p>
+      <p class="font-semibold text-opal-deep dark:text-opal-glow">Custom quotes available</p>
     </div>
+    <div class="card p-6 border border-gray-200 dark:border-gray-700 md:col-span-3">
+      <h3 class="text-xl font-semibold mb-2">🔏 Notary Services (Coming Soon)</h3>
+      <p class="text-gray-600 dark:text-gray-300">When your paperwork needs to be official, we’ll handle that too—right from your home or office.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="section bg-opal-glow/20 dark:bg-secondary-800">
+  <div class="container-custom text-center">
+    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-8">How It Works</h2>
+    <div class="space-y-4 text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
+      <p>Tell us what you need</p>
+      <p>Get a flat quote or custom package</p>
+      <p>Relax—it’s getting handled</p>
+    </div>
+    <a href="/contact" class="btn-primary mt-8">Request Help</a>
   </div>
 </section>
