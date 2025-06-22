@@ -25,46 +25,42 @@ const features = [
     icon: '🔏'
   },
 ];
+
+const steps = [
+  { icon: '1️⃣', text: 'Tell us what you need' },
+  { icon: '2️⃣', text: 'Get a flat quote or custom package' },
+  { icon: '3️⃣', text: 'Relax it is getting handled' },
+];
 ---
+
+<section id="services" class="section bg-white dark:bg-secondary-900">
+  <div class="container-custom text-center mb-12">
+    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-4">What We Do</h2>
+    <p class="text-gray-600 dark:text-gray-300">Life gets messy. We untangle the hard stuff.</p>
+  </div>
+    
+     <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {features.map((feature, index) => (
+      <div class={`card p-6 border border-gray-200 dark:border-gray-700 slide-up`} style={`animation-delay: ${index * 150}ms`}>
+        <h3 class="text-xl font-semibold mb-2">{feature.icon} {feature.title}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">{feature.description}</p>
+        {feature.price && (
+          <p class="font-semibold text-opal-deep dark:text-opal-glow">{feature.price}</p>
+        )}
+      </div>
+    ))}
+  </div>
+</section>
 
 <section id="meet-opal" class="section bg-opal-blush/40 dark:bg-secondary-800">
   <div class="container-custom grid md:grid-cols-2 gap-8 items-center">
     <img src="/opal-avatar.jpg" alt="Opal the Cat" class="w-48 h-48 rounded-full mx-auto" />
     <div class="space-y-4 text-center md:text-left">
-      <h2 class="text-2xl font-semibold text-opal-deep dark:text-white">Meet Opal (Our Cat at Reception)</h2>
-      <p class="italic text-gray-700 dark:text-gray-300">“Hi. I’m Opal. I run the front desk. I don’t chase mice—I chase checklists.”</p>
-      <p class="text-gray-700 dark:text-gray-300">Need help filling something out? I know someone on the team who’s excellent at that.</p>
-      <p class="text-gray-700 dark:text-gray-300">Psst… I don’t do calls. But the humans do. Click the button.</p>
-    </div>
-  </div>
-  </section>
-
-<section id="services" class="section bg-white dark:bg-secondary-900">
-  <div class="container-custom text-center mb-12">
-    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-4">What We Do</h2>
-    <p class="text-gray-600 dark:text-gray-300">Life gets messy. We help you untangle the hard stuff.</p>
-  </div>
-    
-    <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <div class="card p-6 border border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-semibold mb-2">✍️ Form Help &amp; Application Support</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-2">Visa forms, housing apps, benefits, job portals—if it’s confusing, we make it make sense.</p>
-      <p class="font-semibold text-opal-deep dark:text-opal-glow">Starting at $40</p>
-    </div>
-    <div class="card p-6 border border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-semibold mb-2">🧾 Personal Fixer Services</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-2">Behind on tasks? Can’t face the inbox? We’ll help you catch up—quietly and without judgment.</p>
-      <p class="font-semibold text-opal-deep dark:text-opal-glow">Packages from $75</p>
-    </div>
-    
-    <div class="card p-6 border border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-semibold mb-2">✈️ Travel Concierge for Real People</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-2">Trips for anxious flyers, solo explorers, or tired couples. We handle the planning—you enjoy the trip.</p>
-      <p class="font-semibold text-opal-deep dark:text-opal-glow">Custom quotes available</p>
-    </div>
-    <div class="card p-6 border border-gray-200 dark:border-gray-700 md:col-span-3">
-      <h3 class="text-xl font-semibold mb-2">🔏 Notary Services (Coming Soon)</h3>
-      <p class="text-gray-600 dark:text-gray-300">When your paperwork needs to be official, we’ll handle that too—right from your home or office.</p>
+       <h2 class="text-2xl font-semibold text-opal-deep dark:text-white">Meet Opal, Our Resident Desk Cat</h2>
+      <p class="italic text-gray-700 dark:text-gray-300">“Hi. I’m Opal. I keep the humans organized so you don’t have to.”</p>
+      <p class="text-gray-700 dark:text-gray-300">Need help filling something out? I know who on the team can handle it.</p>
+      <p class="text-gray-700 dark:text-gray-300">Psst… I don’t do calls, but the humans do. Tap the button below.</p>
+      <a href="/contact" class="btn-primary inline-block">Say Hello</a>
     </div>
   </div>
 </section>
@@ -72,11 +68,14 @@ const features = [
 <section id="how-it-works" class="section bg-opal-glow/20 dark:bg-secondary-800">
   <div class="container-custom text-center">
     <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-8">How It Works</h2>
-    <div class="space-y-4 text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
-      <p>Tell us what you need</p>
-      <p>Get a flat quote or custom package</p>
-      <p>Relax—it’s getting handled</p>
-    </div>
+    <ol class="space-y-4 text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
+      {steps.map(step => (
+        <li class="flex items-start justify-center md:justify-start">
+          <span class="mr-3 text-2xl" aria-hidden="true">{step.icon}</span>
+          <span>{step.text}</span>
+        </li>
+      ))}
+    </ol>
     <a href="/contact" class="btn-primary mt-8">Request Help</a>
   </div>
 </section>
