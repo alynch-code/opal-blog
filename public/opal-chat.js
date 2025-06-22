@@ -4,9 +4,9 @@
 // Generate a time-based greeting
 function getTimeGreeting() {
   const hour = new Date().getHours();
-  if (hour < 12) return "☀️ Good meowning! Did you dream of yarn?";
-  if (hour < 18) return "🌤️ Opal hopes your afternoon is full of sunbeams.";
-  return "🌙 Cozy night ahead. I'm here if you need a soft paw.";
+  if (hour < 12) return "Good morning! The sun's up, the coffee's warm, and I’m here to help you get a fresh start. What’s on your mind? ☀️";
+  if (hour < 18) return "Good afternoon! If you're juggling tasks, you're in the right place. Let's get something off your plate.";
+  return "Good Night! Soft light, soft paws. Let’s check one more thing off your list before you unplug 🐾";
 }
 
 // Map text tokens to emojis
