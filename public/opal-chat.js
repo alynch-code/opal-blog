@@ -168,7 +168,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // After 60s of inactivity, show sleep message every 30s
     setInterval(() => {
       if (Date.now() - lastInteraction > 60000) createSleepMessage(chatPanel);
-    }, 30000);
+    }, 60000);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
