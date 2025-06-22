@@ -27,6 +27,19 @@ function parseEmojis(text) {
   return text;
 }
 
+// Expose a helper to programmatically open the chat bubble
+function openOpalChat() {
+  const root = document.querySelector('[data-opal-chat]');
+  if (!root) return;
+  const toggle = root.querySelector('#opal-chat-toggle');
+  const chatWindow = root.querySelector('[x-show="open"]');
+  if (toggle) {
+    const hidden = chatWindow && getComputedStyle(chatWindow).display === 'none';
+    if (hidden) toggle.click();
+  }
+}
+window.openOpalChat = openOpalChat;
+
 // Append a message bubble to the chat panel
 function createMessage(chatPanel, sender, text, options = {}) {
   if (!chatPanel) return;

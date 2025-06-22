@@ -6,9 +6,11 @@
   x-data="{ open: false }"
   class="fixed bottom-6 right-6 z-50"
   data-opal-chat="floating"
+  id="opal-chat-widget"
 >
   <!-- Toggle Button -->
-  <button 
+  <button
+    id="opal-chat-toggle"
     @click="open = !open"
     aria-label="Chat with Opal the Cat"
     class="w-16 h-16 rounded-full shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700 hover:scale-105 transition-all"

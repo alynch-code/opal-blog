@@ -27,9 +27,25 @@ const features = [
 ];
 
 const steps = [
-  { icon: '1️⃣', text: 'Tell us what you need' },
-  { icon: '2️⃣', text: 'Get a flat quote or custom package' },
-  { icon: '3️⃣', text: 'Relax it is getting handled' },
+  {
+    heading: 'Submit a Request',
+    text:
+      "Let us know what kind of support you need—whether it's help with a tricky form, finishing an application, or just understanding where to start.",
+  },
+  {
+    heading: 'Opal Will Triage It',
+    text:
+      'Our AI receptionist gives you a warm welcome and sends your request to the right person (or answers right away, if it\u2019s quick!).',
+  },
+  {
+    heading: 'We Get to Work',
+    text:
+      'Our team responds with next steps or delivers the service you requested—efficiently and clearly.',
+  },
+  {
+    heading: 'You Feel the Progress',
+    text: 'Every request you send through Opal helps you move forward—no stress, no fluff.',
+  },
 ];
 ---
 
@@ -41,7 +57,10 @@ const steps = [
     
      <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
     {features.map((feature, index) => (
-      <div class={`card p-6 border border-gray-200 dark:border-gray-700 slide-up`} style={`animation-delay: ${index * 150}ms`}>
+      <div
+        class={`card p-6 border border-gray-200 dark:border-gray-700 slide-up ${index === features.length - 1 ? 'lg:col-span-3 text-center' : ''}`}
+        style={`animation-delay: ${index * 150}ms`}
+      >
         <h3 class="text-xl font-semibold mb-2">{feature.icon} {feature.title}</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-2">{feature.description}</p>
         {feature.price && (
@@ -55,27 +74,41 @@ const steps = [
 <section id="meet-opal" class="section bg-opal-blush/40 dark:bg-secondary-800">
   <div class="container-custom grid md:grid-cols-2 gap-8 items-center">
     <img src="/opal-avatar.jpg" alt="Opal the Cat" class="w-48 h-48 rounded-full mx-auto" />
-    <div class="space-y-4 text-center md:text-left">
-       <h2 class="text-2xl font-semibold text-opal-deep dark:text-white">Meet Opal, Our Resident Desk Cat</h2>
-      <p class="italic text-gray-700 dark:text-gray-300">“Hi. I’m Opal. I keep the humans organized so you don’t have to.”</p>
-      <p class="text-gray-700 dark:text-gray-300">Need help filling something out? I know who on the team can handle it.</p>
-      <p class="text-gray-700 dark:text-gray-300">Psst… I don’t do calls, but the humans do. Tap the button below.</p>
-      <a href="/contact" class="btn-primary inline-block">Say Hello</a>
+    <div class="space-y-6 text-center md:text-left">
+      <h2 class="text-2xl font-semibold text-opal-deep dark:text-white">Meet Opal, Our Professional Cat-On-Duty 🐾</h2>
+      <p class="text-gray-700 dark:text-gray-300">Opal isn’t just a face — she’s our first responder. Whether you're exploring services or just curious about what we do, Opal is here to guide you, answer quick questions, and help you find exactly what you need — all with a signature paw-swipe of professionalism.</p>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-end">
+          <p class="bg-opal-ocean text-white py-2 px-3 rounded-lg max-w-xs">Can I book a quick consult?</p>
+        </div>
+        <div class="flex justify-start">
+          <p class="bg-white dark:bg-secondary-900 shadow-md py-2 px-3 rounded-lg max-w-xs">Absolutely. Would you like help filling out a form or figuring out next steps?</p>
+        </div>
+        <div class="flex justify-end">
+          <p class="bg-opal-ocean text-white py-2 px-3 rounded-lg max-w-xs">Both, actually.</p>
+        </div>
+        <div class="flex justify-start">
+          <p class="bg-white dark:bg-secondary-900 shadow-md py-2 px-3 rounded-lg max-w-xs">Purr-fect. Let me pull up some options for you now.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-primary inline-block" onclick="openOpalChat()">Start Chatting with Opal</button>
     </div>
   </div>
 </section>
 
 <section id="how-it-works" class="section bg-opal-glow/20 dark:bg-secondary-800">
   <div class="container-custom text-center">
-    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-8">How It Works</h2>
-    <ol class="space-y-4 text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
-      {steps.map(step => (
-        <li class="flex items-start justify-center md:justify-start">
-          <span class="mr-3 text-2xl" aria-hidden="true">{step.icon}</span>
-          <span>{step.text}</span>
+    <h2 class="text-3xl font-semibold text-opal-deep dark:text-white mb-8">How We Help You Get Unstuck</h2>
+    <ol class="grid gap-6 md:grid-cols-4 max-w-5xl mx-auto text-left text-gray-700 dark:text-gray-300">
+      {steps.map((step, index) => (
+        <li class="card p-6 flex flex-col h-full">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-opal-ocean text-white font-semibold">{index + 1}</span>
+            <h3 class="font-semibold text-opal-deep dark:text-white">{step.heading}</h3>
+          </div>
+          <p class="text-sm">{step.text}</p>
         </li>
       ))}
     </ol>
-    <a href="/contact" class="btn-primary mt-8">Request Help</a>
   </div>
 </section>
