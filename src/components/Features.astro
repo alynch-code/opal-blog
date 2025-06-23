@@ -1,5 +1,5 @@
 ---
-const features = [
+const services = [
   {
     title: 'Form Help & Application Support',
     description: 'Visa forms, housing apps, benefits, job portals—if it\u2019s confusing, we make it make sense.',
@@ -56,9 +56,9 @@ const steps = [
   </div>
     
      <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {features.map((feature, index) => (
+    {services.map((feature, index) => (
       <div
-        class={`card p-6 border border-gray-200 dark:border-gray-700 slide-up ${index === features.length - 1 ? 'lg:col-span-3 text-center' : ''}`}
+        class={`card p-6 border border-gray-200 dark:border-gray-700 slide-up ${index === services.length - 1 ? 'lg:col-span-3 text-center' : ''}`}
         style={`animation-delay: ${index * 150}ms`}
       >
         <h3 class="text-xl font-semibold mb-2">{feature.icon} {feature.title}</h3>

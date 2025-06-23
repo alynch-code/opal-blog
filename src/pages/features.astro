@@ -5,28 +5,61 @@ import Footer from '../components/Footer.astro';
 import HeroSection from '../components/HeroSection.astro';
 ---
 
-<Layout title="Features - Opal Design">
+<Layout title="What We Offer - Opal Design">
   <Header />
   <main>
     <!-- Hero Section -->
     <HeroSection
-      title="Magical Features, Tailored Just for You"
-      highlightText="Features"
-      description="At Opal Design, everything is designed to feel like a warm mug of tea on a stormy night. Here’s what makes our cozy corner of the internet a little different." />
+      title="What We Offer"
+      highlightText="Offer"
+      description="Our goal is simple: help you take care of what matters—without stress, pressure, or overwhelm. Whether you're swamped with paperwork, avoiding your inbox, or trying to plan a getaway, we’re here to quietly step in and get things done." />
 
     <section class="section py-16 bg-white dark:bg-secondary-800 text-opal-deep dark:text-white">
-      <div class="container-custom grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card p-6 slide-up">
-          <h2 class="text-xl font-semibold mb-2">🐾 Opal the Cat Chatbot</h2>
-          <p>Get support, comfort, and sometimes sass. Opal is here to listen, help, or just purr by your side.</p>
-      </div>
-      <div class="card p-6 slide-up" style="animation-delay:100ms">
-          <h2 class="text-xl font-semibold mb-2">🔮 Cozy Resource Library</h2>
-          <p>Scripts, templates, and explainers to help you through the hard stuff—available 24/7, no questions asked.</p>
-      </div>
-      <div class="card p-6 slide-up" style="animation-delay:200ms">
-          <h2 class="text-xl font-semibold mb-2">🌙 Monthly Moon Drops</h2>
-          <p>Subscribers get surprise goodies, magical tips, and heartfelt reflections—delivered with paw-of-approval.</p>
+      <div class="container-custom grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="card p-6 border border-gray-200 dark:border-gray-700 slide-up">
+          <h2 class="text-xl font-semibold mb-2">✍️ Form Help &amp; Application Support</h2>
+          <p>Visa forms, housing applications, government benefits, job portals—If it feels confusing or overwhelming, we’ll walk you through it or handle it entirely.</p>
+          <ul class="list-disc pl-6 mt-2 space-y-1">
+            <li>Government forms and benefits</li>
+            <li>Job application portals</li>
+            <li>Tenant and housing applications</li>
+            <li>Healthcare paperwork</li>
+            <li>Hard-to-navigate PDFs or digital portals</li>
+          </ul>
+          <p class="mt-2">We make it make sense.<br/>Starting at $40</p>
+        </div>
+        <div class="card p-6 border border-gray-200 dark:border-gray-700 slide-up" style="animation-delay:150ms">
+          <h2 class="text-xl font-semibold mb-2">🧾 Personal Fixer Services</h2>
+          <p>Quiet help for your digital and personal to-do list. Whether you're buried in emails, behind on life tasks, or just need a second brain—we show up with calm support and no judgment.</p>
+          <ul class="list-disc pl-6 mt-2 space-y-1">
+            <li>Inbox cleanup and calendar organizing</li>
+            <li>Sorting out bills, notices, or digital overwhelm</li>
+            <li>Following up on tasks you don’t want to touch</li>
+            <li>Building simple trackers or routines to keep things in motion</li>
+          </ul>
+          <p class="mt-2">It’s like having a personal assistant—without the pressure.<br/>Packages start at $75</p>
+        </div>
+        <div class="card p-6 border border-gray-200 dark:border-gray-700 slide-up" style="animation-delay:300ms">
+          <h2 class="text-xl font-semibold mb-2">✈️ Travel Concierge for Real People</h2>
+          <p>Custom-planned trips for anxious flyers, solo explorers, or couples needing a break.</p>
+          <ul class="list-disc pl-6 mt-2 space-y-1">
+            <li>Handpicked stays that feel safe and special</li>
+            <li>Flexible itineraries (with or without activities)</li>
+            <li>Transparent costs and cozy, real-life planning</li>
+            <li>Support before, during, and after your trip</li>
+          </ul>
+          <p class="mt-2">No influencer vibes. Just real-world getaways done right.<br/>Custom quotes available</p>
+        </div>
+        <div class="card p-6 border border-gray-200 dark:border-gray-700 slide-up lg:col-span-3 text-center" style="animation-delay:450ms">
+          <h2 class="text-xl font-semibold mb-2">🔏 Notary Services (Coming Soon!)</h2>
+          <p>When it needs to be official, we’ll come to you.</p>
+          <ul class="list-disc pl-6 mt-2 space-y-1">
+            <li>Legal forms</li>
+            <li>Real estate documents</li>
+            <li>ID verifications</li>
+            <li>Sworn statements</li>
+          </ul>
+          <p class="mt-2">You can stay cozy at home or meet us at your office.<br/>Launching soon—stay tuned!</p>
         </div>
       </div>
     </section>
@@ -34,8 +67,8 @@ import HeroSection from '../components/HeroSection.astro';
     <!-- Call to Action -->
     <section class="text-center py-16 bg-opal-blush dark:bg-secondary-700">
       <div class="container-custom">
-      <h2 class="text-2xl font-body mb-4">Let Opal help you feel seen, soothed, and supported.</h2>
-      <a href="/subscribe" class="btn-primary">Subscribe to the Magic</a>
+      <h2 class="text-2xl font-body mb-4">Ready to get started?</h2>
+        <a href="/contact" class="btn-primary">Get in Touch</a>
       </div>
     </section>
   </main>
