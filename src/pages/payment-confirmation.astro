@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Payment Confirmed - Opal Design">
+  <Header />
+  <main class="py-32 text-center bg-white dark:bg-secondary-800">
+    <div class="container-custom">
+      <svg class="w-16 h-16 mx-auto text-opal-ocean mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h1 class="text-3xl font-semibold text-opal-deep dark:text-white mb-4">Thank you!</h1>
+      <p class="text-lg text-gray-700 dark:text-gray-300">Your payment was successful.</p>
+    </div>
+  </main>
+  <Footer />
+</Layout>

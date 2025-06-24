@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/HeroSection.astro';
+---
+
+<Layout title="Book Service - Opal Design">
+  <Header />
+  <main>
+    <HeroSection
+      title="Book Your Service"
+      highlightText="Service"
+      description="Securely submit payment to confirm your booking." />
+
+    <section class="py-16 bg-white dark:bg-secondary-800">
+      <div class="container-custom">
+        <div class="max-w-2xl mx-auto p-8 bg-white dark:bg-secondary-800 rounded-xl shadow-md">
+          <form id="payment-form" action="/api/payment" method="POST" class="space-y-6">
+            <div>
+              <label for="name" class="block font-medium text-opal-deep dark:text-white">Name</label>
+              <input type="text" id="name" name="name" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="email" class="block font-medium text-opal-deep dark:text-white">Email</label>
+              <input type="email" id="email" name="email" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="amount" class="block font-medium text-opal-deep dark:text-white">Amount (USD)</label>
+              <input type="number" id="amount" name="amount" value="25" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <button type="submit" class="btn-primary">Pay Now</button>
+          </form>
+          <div id="payment-error" class="hidden text-red-500 text-sm mt-4"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  const cleanupFunctions: Array<() => void> = [];
+  function initializePaymentForm() {
+    const form = document.getElementById('payment-form') as HTMLFormElement | null;
+    const errorEl = document.getElementById('payment-error');
+    if (!form || !errorEl) return;
+    const handleSubmit = async (e: Event) => {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data });
+        if (res.ok) {
+          window.location.href = '/payment-confirmation';
+        } else {
+          const text = await res.text();
+          errorEl.textContent = text || 'Payment failed';
+          errorEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        errorEl.textContent = 'Payment failed';
+        errorEl.classList.remove('hidden');
+        console.error(err);
+      }
+    };
+    form.addEventListener('submit', handleSubmit);
+    cleanupFunctions.push(() => form.removeEventListener('submit', handleSubmit));
+  }
+  document.addEventListener('DOMContentLoaded', initializePaymentForm);
+  document.addEventListener('astro:page-load', initializePaymentForm);
+  document.addEventListener('astro:before-swap', () => {
+    cleanupFunctions.forEach((fn) => fn());
+    cleanupFunctions.length = 0;
+  });
+  window.addEventListener('unload', () => cleanupFunctions.forEach((fn) => fn()));
+</script>
