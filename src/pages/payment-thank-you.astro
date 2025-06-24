@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Payment Received - Opal Design">
+  <Header />
+  <main>
+    <section class="relative overflow-hidden pt-24 md:pt-32 pb-16 bg-gradient-to-b from-opal-blush/40 to-white dark:from-secondary-900 dark:to-secondary-950">
+      <div class="container-custom text-center">
+        <lottie-player src="/animation.json" background="transparent" speed="1" style="max-width:320px;margin:0 auto" class="w-full h-auto" autoplay loop></lottie-player>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 mt-8 text-opal-deep dark:text-white">Thank You!</h1>
+        <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Your payment has been successfully processed. Someone from our team will reach out with further information within 24 hours.
+        </p>
+        <a href="/" class="btn-primary mt-8 inline-block">Return Home</a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
