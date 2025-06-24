@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/HeroSection.astro';
+---
+
+<Layout title="Service Request - Opal Design">
+  <Header />
+  <main>
+    <HeroSection
+      title="Service Request"
+      highlightText="Service"
+      description="Need a hand with paperwork or planning? Use this quick form and we'll follow up shortly." />
+
+    <section class="py-16 bg-white dark:bg-gray-800">
+      <div class="container-custom">
+        <div class="max-w-2xl mx-auto p-8 bg-white dark:bg-secondary-800 rounded-xl shadow-md">
+          <form id="service-form" action="/api/service-request" method="POST" class="space-y-6">
+            <div>
+              <label for="name" class="block font-medium text-opal-deep dark:text-white">Name</label>
+              <input type="text" id="name" name="name" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="email" class="block font-medium text-opal-deep dark:text-white">Email</label>
+              <input type="email" id="email" name="email" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="help" class="block font-medium text-opal-deep dark:text-white">What do you need help with?</label>
+              <textarea id="help" name="help" rows="4" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white"></textarea>
+            </div>
+
+            <div>
+              <label for="deadline" class="block font-medium text-opal-deep dark:text-white">Deadline (if any)</label>
+              <input type="date" id="deadline" name="deadline" class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white" />
+            </div>
+
+            <div>
+              <label for="contactMethod" class="block font-medium text-opal-deep dark:text-white">Preferred contact method</label>
+              <select id="contactMethod" name="contactMethod" required class="w-full mt-2 px-4 py-2 border rounded-md dark:bg-secondary-700 dark:text-white">
+                <option value="" disabled selected>Select one</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="either">Either</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Submit Request</button>
+          </form>
+          <div
+            id="service-success"
+            class="hidden text-opal-ocean dark:text-opal-glow text-md mt-4 transition-opacity duration-500 opacity-0"
+          ></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  const cleanupFunctions: Array<() => void> = [];
+
+  function initializeServiceForm() {
+    const form = document.getElementById('service-form') as HTMLFormElement | null;
+    const successEl = document.getElementById('service-success');
+    if (!form || !successEl) return;
+
+    const handleSubmit = async (e: Event) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' }
+        });
+        if (response.ok) {
+          successEl.textContent = "Thanks! We'll be in touch soon.";
+          form.reset();
+          form.classList.add('hidden');
+          successEl.classList.remove('hidden');
+          setTimeout(() => successEl.classList.add('opacity-100'), 10);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    form.addEventListener('submit', handleSubmit);
+    cleanupFunctions.push(() => form.removeEventListener('submit', handleSubmit));
+  }
+
+  document.addEventListener('DOMContentLoaded', initializeServiceForm);
+  document.addEventListener('astro:page-load', initializeServiceForm);
+  document.addEventListener('astro:before-swap', () => {
+    cleanupFunctions.forEach((fn) => fn());
+    cleanupFunctions.length = 0;
+  });
+  window.addEventListener('unload', () => cleanupFunctions.forEach((fn) => fn()));
+</script>

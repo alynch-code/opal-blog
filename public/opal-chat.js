@@ -56,7 +56,7 @@ function createMessage(chatPanel, sender, text, options = {}) {
     msgEl.textContent = text;
   } else {
     const prefix = sender === 'user' ? 'You: ' : 'Opal: ';
-    msgEl.textContent = prefix + parseEmojis(text);
+    msgEl.innerHTML = prefix + parseEmojis(text);
   }
 
   chatPanel.appendChild(msgEl);
@@ -170,28 +170,70 @@ window.addEventListener('DOMContentLoaded', () => {
       if (Date.now() - lastInteraction > 60000) createSleepMessage(chatPanel);
     }, 60000);
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const msg = input.value.trim();
-      if (!msg) return;
+    // Detect if user wants a human
+const wantsHuman = (text) => {
+  const triggers = [
+    "real person", "talk to someone", "speak to a human",
+    "live agent", "human", "chat with a person", "need help from someone", "help",
+    "book a consult", "consultation", "schedule a call", "submit a request", "service request", "consult", "agent", "free consult", "free"
+  ];
+  return triggers.some(trigger => text.toLowerCase().includes(trigger));
+};
 
-      lastInteraction = Date.now();
-      createMessage(chatPanel, 'user', msg);
-      input.value = '';
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = input.value.trim();
+  if (!msg) return;
 
-      if (typingIndicator) typingIndicator.style.display = 'block';
-      createMessage(chatPanel, 'opal', '…typing…', { isLoading: true });
+  lastInteraction = Date.now();
+  createMessage(chatPanel, 'user', msg);
+  input.value = '';
 
-      // Get Opal's reply
-      const reply = await sendToOpal(msg);
+// If user wants a real human, show WhatsApp link
+if (wantsHuman(msg)) {
+  function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
 
-      // Remove loading bubble and show reply
-      const last = chatPanel.lastChild;
-      if (last && last.dataset.loading) last.remove();
-      createMessage(chatPanel, 'opal', reply);
+  let reply = `Of course 🐾 We can either hop on a quick 30-minute consult or you can fill out a service request form if you already know what you need.`;  
 
-      if (typingIndicator) typingIndicator.style.display = 'none';
-    });
+  reply += `
+  <div class="mt-2 space-y-2">`;
+
+  if (isMobileDevice()) {
+    reply += `
+    <a href="https://wa.me/15125341835?text=Hi%20Opal%2C%20I%20need%20help%20with%20a%20form" target="_blank" class="inline-block px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md">💬 Chat via WhatsApp</a>
+    <a href="sms:+15125341835?body=Hi%20Opal%2C%20I%20need%20help%20with%20a%20form" class="inline-block px-4 py-2 text-sm font-medium text-primary-700 bg-primary-100 hover:bg-primary-200 rounded-md">📱 Send a Text</a>`;
+  } else {
+    reply += `
+    <a href="/contact" class="inline-block px-4 py-2 text-sm font-medium text-primary-700 bg-primary-100 hover:bg-primary-200 rounded-md">📝 Contact Form</a>`;
+  }
+
+  reply += `
+    <a href="https://calendly.com/lyn-opaldesignllc.com/free-consult" target="_blank" class="inline-block px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md">📅 Book a Consult</a>
+    <a href="/request" class="inline-block px-4 py-2 text-sm font-medium text-primary-700 bg-primary-100 hover:bg-primary-200 rounded-md">📝 Submit Request Form</a>
+  </div>`;
+
+  createMessage(chatPanel, 'opal', reply);
+  if (typingIndicator) typingIndicator.style.display = 'none';
+  return;
+}
+
+
+  if (typingIndicator) typingIndicator.style.display = 'block';
+  createMessage(chatPanel, 'opal', '…typing…', { isLoading: true });
+
+  // Get Opal's reply from backend
+  const reply = await sendToOpal(msg);
+
+  // Remove loading bubble and show reply
+  const last = chatPanel.lastChild;
+  if (last && last.dataset.loading) last.remove();
+  createMessage(chatPanel, 'opal', reply);
+
+  if (typingIndicator) typingIndicator.style.display = 'none';
+});
+
 
     // Send on Enter without shift
     input.addEventListener('keydown', (e) => {
