@@ -3,25 +3,29 @@ const services = [
   {
     title: 'Form Help & Application Support',
     description: 'Housing apps, benefits, job portals. If it\u2019s confusing, we make it make sense.',
-    price: 'Starting at $10',
+    price: 'Starting at $99',
+    link: 'https://square.link/u/6Z7f2Wgd',
     icon: '✍️'
   },
   {
     title: 'Personal Fixer Services',
     description: 'Behind on tasks? Can\u2019t face the inbox? We\u2019ll help you catch up quietly and without judgment.',
-    price: 'Packages from $25',
+    price: 'Starting at $149',
+    link: 'https://square.link/u/blaOo1zP',
     icon: '🧾'
   },
   {
     title: 'Travel Concierge for Real People',
     description: 'Trips for anxious flyers, solo explorers, or tired couples. We handle the planning and you enjoy the trip.',
-    price: 'Custom quotes available',
+    price: 'Starting at $199',
+    link: 'https://square.link/u/dohrzfja',
     icon: '✈️'
   },
   {
     title: 'Notary Services (Coming Soon)',
     description: 'When your paperwork needs to be official, we\u2019ll handle that too right from your home or office.',
     price: '',
+    link: '',
     icon: '🔏'
   },
 ];
@@ -65,6 +69,15 @@ const steps = [
         <p class="text-gray-600 dark:text-gray-300 mb-2">{feature.description}</p>
         {feature.price && (
           <p class="font-semibold text-opal-deep dark:text-opal-glow">{feature.price}</p>
+        )}
+        {feature.link && (
+          <a
+            href={feature.link}
+            class="btn-primary mt-4 inline-block"
+            rel="noopener noreferrer"
+          >
+            Book Now
+          </a>
         )}
       </div>
     ))}
